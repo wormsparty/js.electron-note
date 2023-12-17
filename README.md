@@ -7,4 +7,4 @@ To run:
 - npm run start
 
 To deploy:
-- npm run package
+- npm run make
