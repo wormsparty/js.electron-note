@@ -1,20 +1,21 @@
-const { app, Menu, BrowserWindow } = require('electron/main')
-const path = require('node:path')
+const { app, ipcMain, Menu, BrowserWindow } = require('electron/main')
+const path = require('path')
 const electronReload = require('electron-reload')
+const io = require('./io');
 
 function createWindow () {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
     }
   })
 
   win.loadURL(`file://${__dirname}/index.html`)
 }
 
-Menu.setApplicationMenu(null)
+//Menu.setApplicationMenu(null)
 
 app.whenReady().then(() => {
   createWindow()
@@ -31,3 +32,7 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+ipcMain.handle('getFiles', () => {
+    return io.getFiles();
+});
