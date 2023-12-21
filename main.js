@@ -1,5 +1,6 @@
 const { app, Menu, BrowserWindow } = require('electron/main')
 const path = require('node:path')
+const electronReload = require('electron-reload')
 
 function createWindow () {
   const win = new BrowserWindow({
@@ -10,7 +11,7 @@ function createWindow () {
     }
   })
 
-  win.loadFile('index.html')
+  win.loadURL(`file://${__dirname}/index.html`)
 }
 
 Menu.setApplicationMenu(null)
