@@ -1,18 +1,18 @@
 const { app, ipcMain, Menu, BrowserWindow } = require('electron/main')
 const path = require('path')
 const electronReload = require('electron-reload')
-const io = require('./io');
+const io = require('./back/io');
 
 function createWindow () {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'back/preload.js'),
     }
   })
 
-  win.loadURL(`file://${__dirname}/index.html`)
+  win.loadURL(`file://${__dirname}/front/index.html`)
 }
 
 //Menu.setApplicationMenu(null)
