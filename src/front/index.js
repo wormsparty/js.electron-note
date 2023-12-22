@@ -17,4 +17,14 @@ function draw() {
 
 document.addEventListener("DOMContentLoaded", (event) => {
 	draw();
+
+	document.getElementById('close').addEventListener('click', () => {
+console.log('close');
+		document.getElementById('menu').style.display = 'none';
+	});
+	
+	document.getElementById('open').addEventListener('click', () => {
+console.log('display');
+		document.getElementById('menu').style.display = 'block';
+	});
 });
