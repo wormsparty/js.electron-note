@@ -5,26 +5,47 @@ async function clic() {
 }
 
 function draw() {
-  var canvas = document.getElementById('canvas');
-  var ctx = canvas.getContext('2d');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  ctx.imageSmoothingEnabled = false;
+
+  ctx.fillRect(300, 300, 40, 60);
 
   ctx.beginPath();
   ctx.moveTo(75, 50);
   ctx.lineTo(100, 75);
   ctx.lineTo(100, 25);
   ctx.fill();
+
+  ctx.fillText("coucou", 100, 100);
+}
+
+function onresize() {
+	const canvas = document.getElementById('canvas');
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	
+	draw();
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
-	draw();
+	const menu = document.getElementById('menu');
+	menu.style.display = 'none';
 
 	document.getElementById('close').addEventListener('click', () => {
 console.log('close');
-		document.getElementById('menu').style.display = 'none';
+		menu.style.display = 'none';
 	});
 	
 	document.getElementById('open').addEventListener('click', () => {
 console.log('display');
-		document.getElementById('menu').style.display = 'block';
+		menu.style.display = 'block';
 	});
+	
+	onresize();
+});
+
+window.addEventListener("resize", (event) => {
+	onresize();
 });
