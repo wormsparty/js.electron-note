@@ -1,7 +1,7 @@
 {
-  "name": "test",
+  "name": "rogue-test",
   "version": "1.0.0",
-  "description": "A little test",
+  "description": "A rogue test",
   "main": "src/main.js",
   "scripts": {
     "start": "electron-forge start",
