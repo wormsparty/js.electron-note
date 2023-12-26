@@ -125,6 +125,16 @@ window.addEventListener("keydown", async (event) => {
 		grid.map[grid.currentX + grid.currentY * grid.width] = '.';
 	} else if (event.key === 'Delete') {
 		grid.map[grid.currentX + grid.currentY * grid.width] = '.';
+			
+		if (grid.currentX < grid.width - 1) {
+			grid.currentX++;
+		} else {
+			grid.currentX = 0;
+
+			if (grid.currentY < grid.height - 1) {
+				grid.currentY++;
+			}
+		}
 	} else {
 		if (event.key.length === 1 && grid.currentX >= 0 && grid.currentX < grid.width && grid.currentY >= 0 && grid.currentY < grid.height) {
 			grid.map[grid.currentX + grid.currentY * grid.width] = event.key;
