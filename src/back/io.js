@@ -15,15 +15,15 @@ exports.load = () => {
 			currentX: 32,
 			currentY: 12,
 			map: [],
+			color: [],
 		}
 
 		for (let i = 0; i < mapData.width * mapData.height; i++) {
 			// Put gray dots by default
-			mapData.map[i] = {
-				t: '.',
-				c: 1,
-			};
+			mapData.map[i] = '.';
+			mapData.color[i] = 1;
 		}
+
 		return mapData;
 	}
 

@@ -63,23 +63,21 @@ const draw = () => {
   ctx.fillRect(grid.currentX * 16, grid.currentY * 32, 16, 32);
 
   for (let j = 0; j < grid.height; j++) {
-    let point = grid.map[j * grid.width];
-    let text = point.t;
-    let color = point.c;
+    let text = grid.map[j * grid.width];
+    let color = grid.color[j * grid.width];
 
     for (let i = 1; i < grid.width; i++) {
-      point = grid.map[i + j * grid.width];
-      const newColor = point.c;
+      const newColor = grid.color[i + j * grid.width];
 
       if (color == newColor) {
-	text += point.t;
+	text += grid.map[i + j * grid.width];
       } else {
       	ctx.fillStyle = colors[color];
         ctx.fillText(text, posx, posy);
         posx += text.length * 16;
 
 	color = newColor;
-	text = point.t;
+	text = grid.map[i + j * grid.width];
       }
     }
 
@@ -153,10 +151,8 @@ const moveRight = () => {
 const write = (chr) => {
 	console.log(chr);
 
-	grid.map[grid.currentX + grid.currentY * grid.width] = {
-		t: chr,
-		c: currentColor
-	}
+	grid.map[grid.currentX + grid.currentY * grid.width] = chr;
+	grid.color[grid.currentX + grid.currentY * grid.width] = currentColor;
 };
 
 window.addEventListener("keydown", async (event) => {
