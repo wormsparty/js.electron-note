@@ -24,20 +24,8 @@ function draw() {
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
 
-  let scaleX;
-  let scaleY;
-
-  if (window.innerWidth < 1024) {
-    scaleX = window.innerWidth / 1024;
-  } else {
-    scaleX = 1;
-  }
-
-  if (window.innerHeight < 768) {
-    scaleY = window.innerHeight / 768;
-  } else {
-    scaleY = 1;
-  }
+  const scaleX = window.innerWidth / 1024;
+  const scaleY = window.innerHeight / 768;
   
   const scale = Math.min(scaleX, scaleY);
 
