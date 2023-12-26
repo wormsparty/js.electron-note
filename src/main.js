@@ -3,7 +3,7 @@ const path = require('path')
 const electronReload = require('electron-reload')
 const io = require('./back/io');
 
-function createWindow () {
+const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,

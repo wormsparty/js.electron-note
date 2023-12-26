@@ -91,7 +91,7 @@ const draw = () => {
   }
 }
 
-function onresize() {
+const onresize = () => {
   const canvas = document.getElementById('canvas');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
