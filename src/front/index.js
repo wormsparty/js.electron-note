@@ -2,6 +2,20 @@
 // See backend folder for its definition.
 let grid = {};
 
+const colors = [
+  '#FFFFFF', /* white */
+  '#646464', /* gray */
+  '#EF2929', /* red */
+  '#8AE234', /* green */
+  '#FCE94F', /* yellow */
+  '#32AFFF', /* blue */
+  '#AD7fA8', /* magenta */
+  '#34E2E2', /* cyan */
+  '#050505', /* black */
+];
+
+let currentColor = 0;
+
 function draw() {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
@@ -37,17 +51,18 @@ function draw() {
   let posx = 0;
   let posy = 16;
 
+  // TODO: Optimize for less calls if the color is the same on the same line
   for (let j = 0; j < grid.height; j++) {
     for (let i = 0; i < grid.width; i++) {
-      let ch = grid.map[i + j * grid.width];
+      const point = grid.map[i + j * grid.width];
 
       if (i === grid.currentX && j === grid.currentY) {
         ctx.fillStyle = '#FFFFFF';
       } else {
-        ctx.fillStyle = '#646464';
+        ctx.fillStyle = colors[point.c];
       }
 
-      ctx.fillText(ch, posx, posy);
+      ctx.fillText(point.t, posx, posy);
       posx += 16;
     }
 
@@ -114,7 +129,10 @@ const moveRight = () => {
 };
 
 const write = (chr) => {
-	grid.map[grid.currentX + grid.currentY * grid.width] = chr;
+	grid.map[grid.currentX + grid.currentY * grid.width] = {
+		t: chr,
+		c: currentColor
+	}
 };
 
 window.addEventListener("keydown", async (event) => {
@@ -138,6 +156,12 @@ window.addEventListener("keydown", async (event) => {
 	} else if (event.key === 'Delete') {
 		write('.');
 		moveRight();
+	} else if (event.key >= '1' && event.key <= '9') {
+		const newColor = colors[event.key];
+
+		if (newColor) {
+			currentColor = event.key;
+		}
 	} else {
 		if (event.key.length === 1) {
 			write(event.key);

@@ -17,7 +17,13 @@ exports.load = () => {
 			map: [],
 		}
 
-		mapData.map = Array.from('.'.repeat(mapData.width * mapData.height));
+		for (let i = 0; i < mapData.width * mapData.height; i++) {
+			// Put gray dots by default
+			mapData.map[i] = {
+				t: '.',
+				c: 1,
+			};
+		}
 		return mapData;
 	}
 
