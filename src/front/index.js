@@ -8,9 +8,9 @@ const colors = [
   '#EF2929', /* red */
   '#8AE234', /* green */
   '#FCE94F', /* yellow */
-  '#32AFFF', /* blue */
+  '#0000FF', /* blue */
   '#AD7fA8', /* magenta */
-  '#34E2E2', /* cyan */
+  '#AA3300', /* brown */
   '#050505', /* black */
 ];
 
@@ -20,7 +20,7 @@ const colors = [
 const items = '*$()[]%&/?!';
 const map = '<>^v+/';
 const characters = '@t';
-const obstacles = '#~';
+const obstacles = '#~.*';
 
 let currentColor = 0;
 
@@ -174,12 +174,12 @@ window.addEventListener("keydown", async (event) => {
 		moveLeft();	
 		const color = currentColor;
 		currentColor = 1;
-		write('.');
+		write(' ');
 		currentColor = color;
 	} else if (event.key === 'Delete') {
 		const color = currentColor;
 		currentColor = 1;
-		write('.');
+		write(' ');
 		currentColor = color;
 		moveRight();
 	} else if (event.key >= '1' && event.key <= '9') {
@@ -193,6 +193,10 @@ window.addEventListener("keydown", async (event) => {
 			write(obstacles[0]);
 		} else if (event.key == 'w') {
 			write(obstacles[1]);
+		} else if (event.key == 'e') {
+			write(obstacles[2]);
+		} else if (event.key == 'r') {
+			write(obstacles[3]);
 		}
 
 		moveRight();
