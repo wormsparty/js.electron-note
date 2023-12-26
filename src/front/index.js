@@ -21,12 +21,45 @@ function draw() {
 
   ctx.imageSmoothingEnabled = false;
   ctx.font = '32px Inconsolata';
-  ctx.textAlign = 'center';
+  ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.scale(window.innerWidth / 1024, window.innerHeight / 768);
 
-  const startx = 8;
-  let posx = startx;
+  let scaleX;
+  let scaleY;
+
+  if (window.innerWidth < 1024) {
+    scaleX = window.innerWidth / 1024;
+  } else {
+    scaleX = 1;
+  }
+
+  if (window.innerHeight < 768) {
+    scaleY = window.innerHeight / 768;
+  } else {
+    scaleY = 1;
+  }
+  
+  const scale = Math.min(scaleX, scaleY);
+
+  const marginLeft = (window.innerWidth - 1024 * scale) / 2;
+  const marginTop = (window.innerHeight - 768 * scale) / 2;
+
+  ctx.fillStyle = '#050505';
+  
+  if (marginLeft > 0) {
+    ctx.fillRect(0, 0, marginLeft, window.innerHeight);
+    ctx.fillRect(window.innerWidth - marginLeft, 0, marginLeft, window.innerHeight);
+  }
+
+  if (marginTop > 0) {
+    ctx.fillRect(0, 0, window.innerWidth, marginTop);
+    ctx.fillRect(0, window.innerHeight - marginTop, window.innerWidth, marginTop);
+  }
+
+  ctx.translate(marginLeft, marginTop);
+  ctx.scale(scale, scale);
+	
+  let posx = 0;
   let posy = 16;
 
   for (let j = 0; j < grid.height; j++) {
@@ -44,7 +77,7 @@ function draw() {
     }
 
     posy += 32;
-    posx = startx;
+    posx = 0;
   }
 }
 
