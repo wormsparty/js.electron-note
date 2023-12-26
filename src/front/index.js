@@ -17,10 +17,10 @@ const colors = [
 // TODO !
 //  -> Map connections
 //  -> Color by character and/or layer
-const items = [ '*$()[]%&/?!' ];
-const map = [ '<>^v+/' ]
-const characters = [ '@t' ]
-const obstacles = [ '#~' ]
+const items = '*$()[]%&/?!';
+const map = '<>^v+/';
+const characters = '@t';
+const obstacles = '#~';
 
 let currentColor = 0;
 
@@ -59,7 +59,7 @@ const draw = () => {
   let posx = 0;
   let posy = 16;
 
-  ctx.fillStyle = '#222222';
+  ctx.fillStyle = colors[currentColor];
   ctx.fillRect(grid.currentX * 16, grid.currentY * 32, 16, 32);
 
   for (let j = 0; j < grid.height; j++) {
@@ -151,6 +151,8 @@ const moveRight = () => {
 };
 
 const write = (chr) => {
+	console.log(chr);
+
 	grid.map[grid.currentX + grid.currentY * grid.width] = {
 		t: chr,
 		c: currentColor
@@ -190,11 +192,14 @@ window.addEventListener("keydown", async (event) => {
 		if (newColor) {
 			currentColor = event.key;
 		}
-	} else {
-		if (event.key.length === 1) {
-			write(event.key);
-			moveRight();
+	} else if (event.key.length === 1) {
+		if (event.key === 'q') {
+			write(obstacles[0]);
+		} else if (event.key == 'w') {
+			write(obstacles[1]);
 		}
+
+		moveRight();
 	}
 
 	onresize();
