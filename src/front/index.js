@@ -3,9 +3,11 @@ const grid = {
 	height: 24,
 	map: [],
 	charSize: [ 0, 0 ],
+	currentX: 32,
+	currentY: 12,
 };
 
-grid.map = Array.from('@'.repeat(grid.width * grid.height));
+grid.map = Array.from('.'.repeat(grid.width * grid.height));
 
 async function clic() {
 	const files = await window.api.getFiles();
@@ -22,7 +24,6 @@ function draw() {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.scale(window.innerWidth / 1024, window.innerHeight / 768);
-  ctx.fillStyle = '#646464';
 
   const startx = 8;
   let posx = startx;
@@ -30,7 +31,15 @@ function draw() {
 
   for (let j = 0; j < grid.height; j++) {
     for (let i = 0; i < grid.width; i++) {
-      ctx.fillText(grid.map[i + j], posx, posy);
+      let ch = grid.map[i + j * grid.width];
+
+      if (i === grid.currentX && j === grid.currentY) {
+        ctx.fillStyle = '#FFFFFF';
+      } else {
+        ctx.fillStyle = '#646464';
+      }
+
+      ctx.fillText(ch, posx, posy);
       posx += 16;
     }
 
@@ -71,4 +80,42 @@ console.log('display');
 
 window.addEventListener("resize", (event) => {
 	onresize();
+});
+
+window.addEventListener("keydown", (event) => {
+	if (event.key === 'ArrowUp') {
+		if (grid.currentY > 0) {
+			grid.currentY--;
+		}
+	} else if (event.key === 'ArrowDown') {
+		if (grid.currentY < grid.height - 1) {
+			grid.currentY++;
+		}
+	} else if (event.key === 'ArrowLeft') {
+		if (grid.currentX > 0) {
+			grid.currentX--;
+		}
+	} else if (event.key === 'ArrowRight') {
+		if (grid.currentX < grid.width - 1) {
+			grid.currentX++;
+		}
+	} else {
+		if (event.key.length === 1 && grid.currentX >= 0 && grid.currentX < grid.width && grid.currentY >= 0 && grid.currentY < grid.height) {
+			grid.map[grid.currentX + grid.currentY * grid.width] = event.key;
+			if (grid.currentX < grid.width - 1) {
+				grid.currentX++;
+			} else {
+				grid.currentX = 0;
+
+				if (grid.currentY < grid.height - 1) {
+					grid.currentY++;
+				}
+			}
+		}
+	}
+
+	onresize();
+});
+
+window.addEventListener("keyup", (event) => {
 });
