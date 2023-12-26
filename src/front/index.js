@@ -14,9 +14,17 @@ const colors = [
   '#050505', /* black */
 ];
 
+// TODO !
+//  -> Map connections
+//  -> Color by character and/or layer
+const items = [ '*$()[]%&/?!' ];
+const map = [ '<>^v+/' ]
+const characters = [ '@t' ]
+const obstacles = [ '#~' ]
+
 let currentColor = 0;
 
-function draw() {
+const draw = () => {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
 
@@ -47,23 +55,37 @@ function draw() {
 
   ctx.translate(marginLeft, marginTop);
   ctx.scale(scale, scale);
-	
+
   let posx = 0;
   let posy = 16;
 
-  // TODO: Optimize for less calls if the color is the same on the same line
+  ctx.fillStyle = '#222222';
+  ctx.fillRect(grid.currentX * 16, grid.currentY * 32, 16, 32);
+
   for (let j = 0; j < grid.height; j++) {
-    for (let i = 0; i < grid.width; i++) {
-      const point = grid.map[i + j * grid.width];
+    let point = grid.map[j * grid.width];
+    let text = point.t;
+    let color = point.c;
 
-      if (i === grid.currentX && j === grid.currentY) {
-        ctx.fillStyle = '#FFFFFF';
+    for (let i = 1; i < grid.width; i++) {
+      point = grid.map[i + j * grid.width];
+      const newColor = point.c;
+
+      if (color == newColor) {
+	text += point.t;
       } else {
-        ctx.fillStyle = colors[point.c];
-      }
+      	ctx.fillStyle = colors[color];
+        ctx.fillText(text, posx, posy);
+        posx += text.length * 16;
 
-      ctx.fillText(point.t, posx, posy);
-      posx += 16;
+	color = newColor;
+	text = point.t;
+      }
+    }
+
+    if (text.length > 0) {
+      ctx.fillStyle = colors[color];
+      ctx.fillText(text, posx, posy);
     }
 
     posy += 32;
