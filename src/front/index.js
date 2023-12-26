@@ -152,9 +152,15 @@ window.addEventListener("keydown", async (event) => {
 		moveRight();
 	} else if (event.key === 'Backspace') {	
 		moveLeft();	
+		const color = currentColor;
+		currentColor = 1;
 		write('.');
+		currentColor = color;
 	} else if (event.key === 'Delete') {
+		const color = currentColor;
+		currentColor = 1;
 		write('.');
+		currentColor = color;
 		moveRight();
 	} else if (event.key >= '1' && event.key <= '9') {
 		const newColor = colors[event.key];
