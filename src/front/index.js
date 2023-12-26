@@ -1,3 +1,12 @@
+const grid = { 
+	width: 20, 
+	height: 20,
+	map: [],
+	charSize: [ 0, 0 ],
+};
+
+grid.map = Array.from('@'.repeat(grid.width * grid.height));
+
 async function clic() {
 	const files = await window.api.getFiles();
 	console.log('Files = ');
@@ -9,23 +18,30 @@ function draw() {
   const ctx = canvas.getContext('2d');
 
   ctx.imageSmoothingEnabled = false;
+  ctx.font = '32px Inconsolata';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
 
-  ctx.fillRect(300, 300, 40, 60);
+  const startx = 100;
+  let posx = startx;
+  let posy = 100;
 
-  ctx.beginPath();
-  ctx.moveTo(75, 50);
-  ctx.lineTo(100, 75);
-  ctx.lineTo(100, 25);
-  ctx.fill();
+  for (let i = 0; i < grid.width; i++) {
+    for (let j = 0; j < grid.height; j++) {
+      ctx.fillText(grid.map[i + j], posx, posy);
+      posx += 16;
+    }
 
-  ctx.fillText("coucou", 100, 100);
+    posy += 32;
+    posx = startx;
+  }
 }
 
 function onresize() {
 	const canvas = document.getElementById('canvas');
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-	
+
 	draw();
 }
 
@@ -43,7 +59,12 @@ console.log('display');
 		menu.style.display = 'block';
 	});
 	
-	onresize();
+	var consoleFont = new FontFace('Inconsolata', 'url(../../data/Inconsolata.ttf)');
+
+	consoleFont.load().then((font) => {
+		document.fonts.add(font);
+		onresize();
+	});
 });
 
 window.addEventListener("resize", (event) => {
