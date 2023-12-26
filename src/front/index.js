@@ -111,6 +111,20 @@ window.addEventListener("keydown", async (event) => {
 		if (grid.currentX < grid.width - 1) {
 			grid.currentX++;
 		}
+	} else if (event.key === 'Backspace') {	
+		if (grid.currentX > 0) {
+			grid.currentX--;
+		} else {
+			grid.currentX = grid.width - 1;
+
+			if (grid.currentY > 0) {
+				grid.currentY--;
+			}
+		}
+		
+		grid.map[grid.currentX + grid.currentY * grid.width] = '.';
+	} else if (event.key === 'Delete') {
+		grid.map[grid.currentX + grid.currentY * grid.width] = '.';
 	} else {
 		if (event.key.length === 1 && grid.currentX >= 0 && grid.currentX < grid.width && grid.currentY >= 0 && grid.currentY < grid.height) {
 			grid.map[grid.currentX + grid.currentY * grid.width] = event.key;
