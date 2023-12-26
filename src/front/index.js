@@ -1,6 +1,6 @@
 const grid = { 
-	width: 20, 
-	height: 20,
+	width: 64, 
+	height: 24,
 	map: [],
 	charSize: [ 0, 0 ],
 };
@@ -21,13 +21,15 @@ function draw() {
   ctx.font = '32px Inconsolata';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+  ctx.scale(window.innerWidth / 1024, window.innerHeight / 768);
+  ctx.fillStyle = '#646464';
 
-  const startx = 100;
+  const startx = 8;
   let posx = startx;
-  let posy = 100;
+  let posy = 16;
 
-  for (let i = 0; i < grid.width; i++) {
-    for (let j = 0; j < grid.height; j++) {
+  for (let j = 0; j < grid.height; j++) {
+    for (let i = 0; i < grid.width; i++) {
       ctx.fillText(grid.map[i + j], posx, posy);
       posx += 16;
     }
