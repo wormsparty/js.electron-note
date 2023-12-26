@@ -3,10 +3,26 @@ const os = require('os');
 const appDir = path.resolve(os.homedir());
 const fs = require('fs');
 
-exports.getFiles = () => {
-    console.log('Listing files in ' + appDir);
-    const files = fs.readdirSync(appDir);
-    console.log(files);
-    return files;
+exports.load = () => {
+	try {
+		return JSON.parse(fs.readFileSync('data/map.json', { encoding: 'utf8', flag: 'r' }));
+	} catch (error) {
+		console.log(error);
+
+		const mapData = {
+			width: 64, 
+			height: 24,
+			currentX: 32,
+			currentY: 12,
+			map: [],
+		}
+
+		mapData.map = Array.from('.'.repeat(mapData.width * mapData.height));
+		return mapData;
+	}
+
 };
 
+exports.save = (mapData) => {
+	fs.writeFileSync('data/map.json', JSON.stringify(mapData));
+};

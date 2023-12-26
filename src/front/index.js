@@ -1,19 +1,6 @@
-const grid = { 
-	width: 64, 
-	height: 24,
-	map: [],
-	charSize: [ 0, 0 ],
-	currentX: 32,
-	currentY: 12,
-};
-
-grid.map = Array.from('.'.repeat(grid.width * grid.height));
-
-async function clic() {
-	const files = await window.api.getFiles();
-	console.log('Files = ');
-	console.log(files);
-}
+// Contains the map data such as size, object positions, etc.
+// See backend folder for its definition.
+let grid = {};
 
 function draw() {
   const canvas = document.getElementById('canvas');
@@ -70,11 +57,11 @@ function draw() {
 }
 
 function onresize() {
-	const canvas = document.getElementById('canvas');
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+  const canvas = document.getElementById('canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-	draw();
+  draw();
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
@@ -93,8 +80,10 @@ console.log('display');
 	
 	var consoleFont = new FontFace('Inconsolata', 'url(../../data/Inconsolata.ttf)');
 
-	consoleFont.load().then((font) => {
+	consoleFont.load().then(async (font) => {
 		document.fonts.add(font);
+		grid = await window.api.load();
+		console.log(grid);
 		onresize();
 	});
 });
@@ -103,8 +92,10 @@ window.addEventListener("resize", (event) => {
 	onresize();
 });
 
-window.addEventListener("keydown", (event) => {
-	if (event.key === 'ArrowUp') {
+window.addEventListener("keydown", async (event) => {
+	if (event.ctrlKey && event.key === 's') {
+		await window.api.save(grid);
+	} else if (event.key === 'ArrowUp') {
 		if (grid.currentY > 0) {
 			grid.currentY--;
 		}
@@ -136,7 +127,4 @@ window.addEventListener("keydown", (event) => {
 	}
 
 	onresize();
-});
-
-window.addEventListener("keyup", (event) => {
 });

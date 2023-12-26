@@ -15,6 +15,7 @@ function createWindow () {
   win.loadURL(`file://${__dirname}/front/index.html`)
 }
 
+// Uncomment when app is more stable
 //Menu.setApplicationMenu(null)
 
 app.whenReady().then(() => {
@@ -33,6 +34,10 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.handle('getFiles', () => {
-    return io.getFiles();
+ipcMain.handle('load', () => {
+    return io.load();
+});
+
+ipcMain.handle('save', (_, data) => {
+    return io.save(data);
 });
