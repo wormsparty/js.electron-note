@@ -69,12 +69,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	menu.style.display = 'none';
 
 	document.getElementById('close').addEventListener('click', () => {
-console.log('close');
 		menu.style.display = 'none';
 	});
 	
 	document.getElementById('open').addEventListener('click', () => {
-console.log('display');
 		menu.style.display = 'block';
 	});
 	
@@ -83,7 +81,6 @@ console.log('display');
 	consoleFont.load().then(async (font) => {
 		document.fonts.add(font);
 		grid = await window.api.load();
-		console.log(grid);
 		onresize();
 	});
 });
@@ -91,6 +88,34 @@ console.log('display');
 window.addEventListener("resize", (event) => {
 	onresize();
 });
+
+const moveLeft = () => {
+	if (grid.currentX > 0) {
+		grid.currentX--;
+	} else {
+		grid.currentX = grid.width - 1;
+
+		if (grid.currentY > 0) {
+			grid.currentY--;
+		}
+	}
+};
+
+const moveRight = () => {
+	if (grid.currentX < grid.width - 1) {
+		grid.currentX++;
+	} else {
+		grid.currentX = 0;
+
+		if (grid.currentY < grid.height - 1) {
+			grid.currentY++;
+		}
+	}
+};
+
+const write = (chr) => {
+	grid.map[grid.currentX + grid.currentY * grid.width] = chr;
+};
 
 window.addEventListener("keydown", async (event) => {
 	if (event.ctrlKey && event.key === 's') {
@@ -104,49 +129,19 @@ window.addEventListener("keydown", async (event) => {
 			grid.currentY++;
 		}
 	} else if (event.key === 'ArrowLeft') {
-		if (grid.currentX > 0) {
-			grid.currentX--;
-		}
+		moveLeft();
 	} else if (event.key === 'ArrowRight') {
-		if (grid.currentX < grid.width - 1) {
-			grid.currentX++;
-		}
+		moveRight();
 	} else if (event.key === 'Backspace') {	
-		if (grid.currentX > 0) {
-			grid.currentX--;
-		} else {
-			grid.currentX = grid.width - 1;
-
-			if (grid.currentY > 0) {
-				grid.currentY--;
-			}
-		}
-		
-		grid.map[grid.currentX + grid.currentY * grid.width] = '.';
+		moveLeft();	
+		write('.');
 	} else if (event.key === 'Delete') {
-		grid.map[grid.currentX + grid.currentY * grid.width] = '.';
-			
-		if (grid.currentX < grid.width - 1) {
-			grid.currentX++;
-		} else {
-			grid.currentX = 0;
-
-			if (grid.currentY < grid.height - 1) {
-				grid.currentY++;
-			}
-		}
+		write('.');
+		moveRight();
 	} else {
-		if (event.key.length === 1 && grid.currentX >= 0 && grid.currentX < grid.width && grid.currentY >= 0 && grid.currentY < grid.height) {
-			grid.map[grid.currentX + grid.currentY * grid.width] = event.key;
-			if (grid.currentX < grid.width - 1) {
-				grid.currentX++;
-			} else {
-				grid.currentX = 0;
-
-				if (grid.currentY < grid.height - 1) {
-					grid.currentY++;
-				}
-			}
+		if (event.key.length === 1) {
+			write(event.key);
+			moveRight();
 		}
 	}
 
