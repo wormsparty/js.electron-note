@@ -3,12 +3,15 @@ const os = require('os');
 const appDir = path.resolve(os.homedir());
 const fs = require('fs');
 
-exports.load = () => {
+exports.load = (name) => {
 	try {
-		return JSON.parse(fs.readFileSync('data/map.json', { encoding: 'utf8', flag: 'r' }));
+		return JSON.parse(fs.readFileSync(`data/${name}`, { encoding: 'utf8', flag: 'r' }));
 	} catch (error) {
-		console.log(error);
-
+		if (name !== 'default.json') {
+			console.log(error);
+			return null;
+		}
+		
 		const mapData = {
 			width: 64, 
 			height: 24,
@@ -16,6 +19,7 @@ exports.load = () => {
 			currentY: 12,
 			map: [],
 			color: [],
+			neighbor: [null, null, null, null],
 		}
 
 		for (let i = 0; i < mapData.width * mapData.height; i++) {
@@ -23,12 +27,11 @@ exports.load = () => {
 			mapData.map[i] = '.';
 			mapData.color[i] = 1;
 		}
-
+		
 		return mapData;
 	}
-
 };
 
 exports.save = (mapData) => {
-	fs.writeFileSync('data/map.json', JSON.stringify(mapData));
+	fs.writeFileSync(`data/${mapData.name}`, JSON.stringify(mapData));
 };

@@ -23,6 +23,7 @@ const characters = '@t';
 const obstacles = '#~.*';
 
 let currentColor = 0;
+let mode = 'edit';
 
 const draw = () => {
   const canvas = document.getElementById('canvas');
@@ -115,7 +116,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 	consoleFont.load().then(async (font) => {
 		document.fonts.add(font);
-		grid = await window.api.load();
+		grid = await window.api.load('default.json');
 		onresize();
 	});
 });
