@@ -1,7 +1,7 @@
-const { app, ipcMain, Menu, BrowserWindow } = require('electron/main');
-const path = require('path');
-const io = require('./back/io');
-require('electron-reload');
+import { app, ipcMain, Menu, BrowserWindow } from 'electron/main';
+import * as path from 'path';
+import * as io from './back/io';
+import 'electron-reload';
 
 const createWindow = () => {
   const win = new BrowserWindow({
