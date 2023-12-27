@@ -1,6 +1,7 @@
-const fs = require('fs');
+import * as fs from 'fs';
+import { Grid } from '../types';
 
-exports.load = (name) => {
+exports.load = (name: string) => {
 	try {
 		return JSON.parse(fs.readFileSync(`data/${name}`, { encoding: 'utf8', flag: 'r' }));
 	} catch (error) {
@@ -9,6 +10,6 @@ exports.load = (name) => {
 	}
 };
 
-exports.save = (mapData) => {
+exports.save = (mapData: Grid) => {
 	fs.writeFileSync(`data/${mapData.name}`, JSON.stringify(mapData));
 };

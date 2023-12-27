@@ -2,13 +2,14 @@
   "name": "rogue-test",
   "version": "1.0.0",
   "description": "A rogue test",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "tsc && electron-forge start",
+    "watch": "tsc -w",
     "lint": "eslint src/",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "package": "tsc && electron-forge package",
+    "make": "tsc && electron-forge make"
   },
   "author": "",
   "license": "ISC",
@@ -19,8 +20,11 @@
     "@electron-forge/maker-squirrel": "^7.2.0",
     "@electron-forge/maker-zip": "^7.2.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
     "electron": "^28.0.0",
-    "eslint": "^8.56.0"
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "electron-reload": "^2.0.0-alpha.1",

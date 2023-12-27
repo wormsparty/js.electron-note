@@ -12,7 +12,7 @@ const createWindow = () => {
     }
   })
 
-  win.loadURL(`file://${__dirname}/front/index.html`)
+  win.loadURL(`file://${__dirname}/../data/index.html`)
 };
 
 // Uncomment when app is more stable

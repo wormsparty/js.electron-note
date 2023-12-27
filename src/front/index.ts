@@ -1,17 +1,19 @@
-// Contains the map data such as size, object positions, etc.
-// See backend folder for its definition.
-let grid = {};
+import { Grid } from '../types';
+
+let grid: Grid = undefined;
 
 let currentColor = 0;
 let mode = 'edit';
 let question = '';
 let answer = '';
-let answered = () => {};
+let answered: (a: string) => void = undefined;
 
 const draw = () => {
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
+  const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   ctx.font = '32px Inconsolata';
   ctx.textAlign = 'left';
@@ -83,31 +85,23 @@ const draw = () => {
   }
 }
 
-const onresize = () => {
-  const canvas = document.getElementById('canvas');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  draw();
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-	var consoleFont = new FontFace('Inconsolata', 'url(../../data/Inconsolata.ttf)');
+	var consoleFont = new FontFace('Inconsolata', 'url(Inconsolata.ttf)');
 
 	consoleFont.load().then(async (font) => {
-		document.fonts.add(font);
-		grid = await window.api.load('default.json');
+		(<any>document).fonts.add(font);
+		grid = await (<any>window).api.load('default.json');
 
 		if (grid === null) {
 			grid = newMap('default.json');
 		}
 
-		onresize();
+		draw();
 	});
 });
 
 window.addEventListener("resize", () => {
-	onresize();
+	draw();
 });
 
 const moveLeft = () => {
@@ -140,8 +134,8 @@ const moveDown = () => {
 	}
 };
 
-const newMap = (name) => {
-	const mapData = {
+const newMap = (name: string) => {
+	const mapData: Grid = {
 		width: 64, 
 		height: 24,
 		currentX: 32,
@@ -162,16 +156,16 @@ const newMap = (name) => {
 	return mapData;
 }
 
-const goTo = async (index) => {
+const goTo = async (index: number) => {
 	let newGrid;
 	const map = grid.neighbors[index];
 
 	if (map === null) {
 		question = 'Enter map name: ';
 		answer = '';
-		answered = (answer) => {
+		answered = (answer: string) => {
 			grid.neighbors[index] = answer;
-			window.api.save(grid);
+			(<any>window).api.save(grid);
 
 			newGrid = newMap(`${answer}.json`);
 
@@ -185,28 +179,28 @@ const goTo = async (index) => {
 				newGrid.neighbors[0] = grid.name;
 			}
 
-			window.api.save(newGrid);
+			(<any>window).api.save(newGrid);
 
 			question = '';
 		
 			grid = newGrid;
-			onresize();
+			draw();
 		}
 
-		onresize();
+		draw();
 	} else {
-		grid = await window.api.load(map);
-		onresize();
+		grid = await (<any>window).api.load(map);
+		draw();
 		console.log('Loaded ' + map);
 	}
 };
 
-const write = (chr) => {
+const write = (chr: string) => {
 	grid.map[grid.currentX + grid.currentY * grid.width] = chr;
 	grid.color[grid.currentX + grid.currentY * grid.width] = currentColor;
 };
 
-window.addEventListener("keydown", async (event) => {
+window.addEventListener("keydown", async (event: any) => {
 	if (question) {
 		if (event.key.length === 1) {
 			answer += event.key;
@@ -218,12 +212,12 @@ window.addEventListener("keydown", async (event) => {
 			question = '';
 		}
 
-		onresize();
+		draw();
 		return;
 	}
 
 	if (event.ctrlKey && event.key === 's') {
-		await window.api.save(grid);
+		await (<any>window).api.save(grid);
 	} else if (event.key === 'ArrowUp') {
 		if (grid.currentY > 0) {
 			grid.currentY--;
@@ -276,5 +270,5 @@ window.addEventListener("keydown", async (event) => {
 		moveRight();
 	}
 
-	onresize();
+	draw();
 });

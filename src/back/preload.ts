@@ -1,10 +1,11 @@
-const { contextBridge, ipcRenderer} = require("electron");
+import { contextBridge, ipcRenderer} from 'electron';
+import { Grid } from '../types';
 
 contextBridge.exposeInMainWorld('api', {
-    load: async (name) => {
+    load: async (name: string) => {
         return await ipcRenderer.invoke("load", name);
     },
-    save: async (data) => {
+    save: async (data: Grid) => {
         return await ipcRenderer.invoke("save", data);
     },
 });
