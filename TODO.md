@@ -1,4 +1,5 @@
 - Be able to change maps left / right / top / bottom with del / home / end / page down
+- Prompt for name (like map name)
 - Edit / play mode
 - Display current character, change with 1-2, 3-4 and 5-6 for char / color / layer
 - Add walk logic: 

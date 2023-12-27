@@ -34,8 +34,8 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.handle('load', () => {
-    return io.load();
+ipcMain.handle('load', (_, name) => {
+    return io.load(name);
 });
 
 ipcMain.handle('save', (_, data) => {

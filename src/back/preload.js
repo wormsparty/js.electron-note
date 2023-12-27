@@ -1,12 +1,10 @@
 const { contextBridge, ipcRenderer} = require("electron");
 
 contextBridge.exposeInMainWorld('api', {
-    load: async () => {
-        return await ipcRenderer.invoke("load");
+    load: async (name) => {
+        return await ipcRenderer.invoke("load", name);
     },
     save: async (data) => {
-	    console.log('args = ');
-	    console.log(data);
         return await ipcRenderer.invoke("save", data);
     },
 });
