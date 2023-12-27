@@ -5,5 +5,6 @@
   -> left + top should be done in one diagonal step
   -> only walk on dots
   -> change screen
+- Animated ASCII?
 - What do we do?
 - Multi?
