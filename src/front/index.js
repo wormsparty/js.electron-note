@@ -24,6 +24,9 @@ const obstacles = '#~.*';
 
 let currentColor = 0;
 let mode = 'edit';
+let question = '';
+let answer = '';
+let answered = () => {};
 
 const draw = () => {
   const canvas = document.getElementById('canvas');
@@ -42,16 +45,19 @@ const draw = () => {
   const marginLeft = (window.innerWidth - 1024 * scale) / 2;
   const marginTop = (window.innerHeight - 768 * scale) / 2;
 
+  const ajustementLeft = window.innerWidth - 1024 * scale - marginLeft * 2;
+  const ajustementTop = window.innerHeight - 768 * scale - marginTop * 2;
+
   ctx.fillStyle = '#050505';
   
   if (marginLeft > 0) {
     ctx.fillRect(0, 0, marginLeft, window.innerHeight);
-    ctx.fillRect(window.innerWidth - marginLeft, 0, marginLeft, window.innerHeight);
+    ctx.fillRect(window.innerWidth - marginLeft - ajustementLeft, 0, marginLeft, window.innerHeight);
   }
 
   if (marginTop > 0) {
     ctx.fillRect(0, 0, window.innerWidth, marginTop);
-    ctx.fillRect(0, window.innerHeight - marginTop, window.innerWidth, marginTop);
+    ctx.fillRect(0, window.innerHeight - marginTop - ajustementTop, window.innerWidth, marginTop);
   }
 
   ctx.translate(marginLeft, marginTop);
@@ -89,6 +95,11 @@ const draw = () => {
 
     posy += 32;
     posx = 0;
+  }
+
+  if (question) {
+    ctx.fillStyle = colors[0];
+    ctx.fillText(question + answer, 16, 48);
   }
 }
 
@@ -201,32 +212,37 @@ const goTo = async (index) => {
 	const map = grid.neighbors[index];
 
 	if (map === null) {
-		// TODO: Be able to rename
-		const newName = `${makeId(8)}.json`;
-		grid.neighbors[index] = newName;
-		window.api.save(grid);
+		question = 'Enter map name: ';
+		answer = '';
+		answered = (answer) => {
+			grid.neighbors[index] = answer;
+			window.api.save(grid);
 
-		newGrid = newMap(newName);
+			newGrid = newMap(`${answer}.json`);
 
-		if (index === 0) {
-			newGrid.neighbors[3] = grid.name;
-		} else if (index === 1) {
-			newGrid.neighbors[2] = grid.name;
-		} else if (index === 2) {
-			newGrid.neighbors[1] = grid.name;
-		} else {
-			newGrid.neighbors[0] = grid.name;
+			if (index === 0) {
+				newGrid.neighbors[3] = grid.name;
+			} else if (index === 1) {
+				newGrid.neighbors[2] = grid.name;
+			} else if (index === 2) {
+				newGrid.neighbors[1] = grid.name;
+			} else {
+				newGrid.neighbors[0] = grid.name;
+			}
+
+			window.api.save(newGrid);
+
+			question = '';
+		
+			grid = newGrid;
+			onresize();
 		}
 
-		window.api.save(newGrid);
-	} else {
-		newGrid = await window.api.load(map);
-		console.log('Loaded ' + map);
-	}
-
-	if (newGrid !== null) {
-		grid = newGrid;
 		onresize();
+	} else {
+		grid = await window.api.load(map);
+		onresize();
+		console.log('Loaded ' + map);
 	}
 };
 
@@ -236,6 +252,21 @@ const write = (chr) => {
 };
 
 window.addEventListener("keydown", async (event) => {
+	if (question) {
+		if (event.key.length === 1) {
+			answer += event.key;
+		} else if (event.key === 'Backspace') {
+			answer = answer.slice(0, -1);
+		} else if (event.key === 'Enter') {
+			answered(answer);
+		} else if (event.key === 'Escape') {
+			question = '';
+		}
+
+		onresize();
+		return;
+	}
+
 	if (event.ctrlKey && event.key === 's') {
 		await window.api.save(grid);
 	} else if (event.key === 'ArrowUp') {
