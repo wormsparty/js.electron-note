@@ -73,7 +73,7 @@ const draw = () => {
       if (color == newColor) {
 	text += grid.map[i + j * grid.width];
       } else {
-      	ctx.fillStyle = colors[color];
+        ctx.fillStyle = colors[color];
         ctx.fillText(text, posx, posy);
         posx += text.length * 16;
 
@@ -100,7 +100,7 @@ const onresize = () => {
   draw();
 }
 
-document.addEventListener("DOMContentLoaded", (event) => {
+document.addEventListener("DOMContentLoaded", () => {
 	const menu = document.getElementById('menu');
 	menu.style.display = 'none';
 
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	});
 });
 
-window.addEventListener("resize", (event) => {
+window.addEventListener("resize", () => {
 	onresize();
 });
 

@@ -1,6 +1,3 @@
-const path = require('node:path');
-const os = require('os');
-const appDir = path.resolve(os.homedir());
 const fs = require('fs');
 
 exports.load = (name) => {
