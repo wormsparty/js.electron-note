@@ -10,9 +10,6 @@ const colors = [
   '#050505', /* black */
 ];
 
-// TODO !
-//  -> Map connections
-//  -> Color by character and/or layer
 const items = '*$()[]%&/?!';
 const map = '<>^v+/';
 const characters = '@t';
