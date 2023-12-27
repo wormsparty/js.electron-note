@@ -92,17 +92,6 @@ const onresize = () => {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-	const menu = document.getElementById('menu');
-	menu.style.display = 'none';
-
-	document.getElementById('close').addEventListener('click', () => {
-		menu.style.display = 'none';
-	});
-	
-	document.getElementById('open').addEventListener('click', () => {
-		menu.style.display = 'block';
-	});
-	
 	var consoleFont = new FontFace('Inconsolata', 'url(../../data/Inconsolata.ttf)');
 
 	consoleFont.load().then(async (font) => {

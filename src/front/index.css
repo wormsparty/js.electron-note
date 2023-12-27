@@ -11,37 +11,12 @@ html, body {
 	background-color: black;
 	color: white;
 	user-select: none;
-}
-
-body, button {
 	font-family: 'Inconsolata';
-}
-
-#menu {
-	display: block;
-	width: 200px;
-	height: calc(100% - 20px);
-	position: absolute;
-	left: 0;
-	top: 0;
-	background-color: pink;
-	padding: 10px;
 }
 
 #canvas {
 	position: absolute;
 	left: 0;
 	top: 0;
-}
-
-#open {
-	position: absolute;
-	left: 0;
-	top: 0;
-	padding: 10px;
-}
-
-#close, #open {
-	cursor: pointer;
 }
 
