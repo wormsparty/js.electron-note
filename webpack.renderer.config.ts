@@ -10,13 +10,12 @@ rules.push({
 
 rules.push({
   test: /\.ttf$/,
-  use: {
+  use: [{ 
     loader: 'file-loader',
     options: {
       name: '[name].[ext]',
-      outputPath: 'fonts/'
     }
-  }
+  }]
 });
 
 export const rendererConfig: Configuration = {
@@ -25,6 +24,6 @@ export const rendererConfig: Configuration = {
   },
   plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
+    extensions: ['.js', '.ts', '.css'],
   },
 };
