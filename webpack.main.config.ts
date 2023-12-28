@@ -9,7 +9,6 @@ export const mainConfig: Configuration = {
    * that runs in the main process.
    */
   entry: './src/main.ts',
-  target: 'electron-main',
   // Put your normal webpack config below here
   module: {
     rules,
