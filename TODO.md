@@ -1,9 +1,4 @@
-- Enlever les raccourcis Home / End / Delete / PageDown
-  Mettre à jour la doc.
-- Toucher le bord de l'écran en non-play demande:
-   > n -> nouvel écran
-   > l -> lier à un écran existant
-   > d -> supprimer lien / carte
+- Be able to remove a map (if it doesn't leave orphans behind).
 - Error if missing @ in default.json
 - Play mode:
     > Start at @
@@ -14,6 +9,5 @@
     > How do we place items?
 - Assign a color to a given character per layer.
   Don't edit color freely.
-- Be able to remove a map (if it doesn't leave orphans behind).
 - What's the setting? What's the aim of the game?
 - Multi? C++?

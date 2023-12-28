@@ -118,45 +118,38 @@ window.addEventListener("resize", () => {
 const moveLeft = () => {
 	if (grid.currentX > 0) {
 		grid.currentX--;
+		draw();
 	} else {
-		grid.currentX = grid.width - 1;
-
-		if (grid.currentY > 0) {
-			grid.currentY--;
-		}
+		goTo(0);
 	}
 	
-	draw();
 };
 
 const moveRight = () => {
 	if (grid.currentX < grid.width - 1) {
 		grid.currentX++;
+		draw();
 	} else {
-		grid.currentX = 0;
-
-		if (grid.currentY < grid.height - 1) {
-			grid.currentY++;
-		}
+		goTo(3);
 	}
-	
-	draw();
 };
 
 const moveDown = () => {
 	if (grid.currentY < grid.height - 1) {
 		grid.currentY++;
+		draw();
+	} else {
+		goTo(2);
 	}
-	
-	draw();
 };
 
 const moveUp = () => {
 	if (grid.currentY > 0) {
 		grid.currentY--;
+		draw();
+	} else {
+		goTo(1);
 	}
-	
-	draw();
 }
 
 const newMap = (name: string) => {
@@ -185,47 +178,71 @@ const goTo = async (index: number) => {
 	let newGrid;
 	const map = grid.neighbors[index];
 
-	if (map === null) {
-		question = 'Enter new map name: ';
-		answer = '';
-		answered = async (answer: string) => {
-			const newMapName = `${answer}.json`;
-			const fileExists = await (<any>window).api.fileExists(newMapName);
+	if (map !== null) {
+		const lastX = grid.currentX;
+		const lastY = grid.currentY;
 
-			if (fileExists) {
-				question = '';
-				draw('File already exists.');
-				return;
-			}
-
-			grid.neighbors[index] = newMapName;
-			await (<any>window).api.save(grid);
-
-			newGrid = newMap(newMapName);
-
-			if (index === 0) {
-				newGrid.neighbors[3] = grid.name;
-			} else if (index === 1) {
-				newGrid.neighbors[2] = grid.name;
-			} else if (index === 2) {
-				newGrid.neighbors[1] = grid.name;
-			} else {
-				newGrid.neighbors[0] = grid.name;
-			}
-
-			await (<any>window).api.save(newGrid);
-
-			question = '';
+		grid = await (<any>window).api.load(map);
 		
-			grid = newGrid;
-			draw(`Map ${newMapName} created`);
+		if (index === 0) {
+			grid.currentX = grid.width - 1;
+			grid.currentY = lastY;
+		} else if (index === 1) {
+			grid.currentX = lastX;
+			grid.currentY = 0;
+		} else if (index === 2) {
+			grid.currentX = lastX;
+			grid.currentY = grid.height - 1; 
+		} else {
+			grid.currentX = 0;
+			grid.currentY = lastY;
 		}
 
 		draw();
-	} else {
-		grid = await (<any>window).api.load(map);
-		draw(`Loaded ${map}`);
+		return;
 	}
+	
+	if (mode === 'play') {
+		draw();
+		return;
+	}
+
+	// TODO: Ask for new / link to existing / delete
+	question = 'Enter new map name (or esc): ';
+	answer = '';
+	answered = async (answer: string) => {
+		const newMapName = `${answer}.json`;
+		const fileExists = await (<any>window).api.fileExists(newMapName);
+
+		if (fileExists) {
+			question = '';
+			draw('File already exists.');
+			return;
+		}
+
+		grid.neighbors[index] = newMapName;
+		await (<any>window).api.save(grid);
+
+		newGrid = newMap(newMapName);
+
+		if (index === 0) {
+			newGrid.neighbors[3] = grid.name;
+		} else if (index === 1) {
+			newGrid.neighbors[2] = grid.name;
+		} else if (index === 2) {
+			newGrid.neighbors[1] = grid.name;
+		} else {
+			newGrid.neighbors[0] = grid.name;
+		}
+
+		await (<any>window).api.save(newGrid);
+
+		question = '';
+		grid = newGrid;
+		draw(`Map ${newMapName} created`);
+	}
+
+	draw();
 };
 
 const write = (chr: string) => {
@@ -261,18 +278,6 @@ window.addEventListener("keydown", async (event: any) => {
 	} else if (event.key === 'F2') { 
 		switchToMode('text');
 		return;
-	} else if (event.key === 'Delete') {
-		goTo(0);
-		return;
-	} else if (event.key === 'Home') {
-		goTo(1);
-		return;
-	} else if (event.key === 'End') {
-		goTo(2);
-		return;
-	} else if (event.key === 'PageDown') {
-		goTo(3);
-		return;
 	} else if (event.key === 'ArrowUp') {
 		moveUp();
 		return;
@@ -298,7 +303,8 @@ window.addEventListener("keydown", async (event: any) => {
 			if (newColor) {
 				currentColor = event.key;
 			}
-
+			
+			draw();
 			return;
 		} else if (event.key === 'Backspace') {	
 			moveLeft();	
