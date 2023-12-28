@@ -1,3 +1,9 @@
+- Enlever les raccourcis Home / End / Delete / PageDown
+  Mettre à jour la doc.
+- Toucher le bord de l'écran en non-play demande:
+   > n -> nouvel écran
+   > l -> lier à un écran existant
+   > d -> supprimer lien / carte
 - Error if missing @ in default.json
 - Play mode:
     > Start at @
