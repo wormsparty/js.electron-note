@@ -1,3 +1,4 @@
+- Error if missing @ in default.json
 - Play mode:
     > Start at @
     > Move through dots, stop at the rest
