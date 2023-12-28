@@ -13,11 +13,10 @@ To package:
 
 ## Controls
 
-- Arrows to move character or curcor around.
+- Arrows to move character or cursor around.
 - F1 to go to item placement mode.
 - F2 to go to text writing mode.
 - Escape to go back to play mode.
-- Delete to create a map on the left of the current screen.
-  Home for top, End for bottom, and PageDown for right.
-  If the map doesn't exist, you will be prompted to input
-  a name what will be used as a filename.
+- Create a map by going in item or text mode and move to the desired screen border.
+  Type in the map name, the file will be placed in `map/${name}.json`.
+  Escape to cancel.
