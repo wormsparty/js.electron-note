@@ -1,8 +1,8 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
+  "name": "rogue-maker",
+  "productName": "rogue-maker",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Rogue Maker",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
