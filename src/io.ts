@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Grid } from '../types';
+import { Grid } from './types';
 
 export const load = (name: string) => {
 	try {

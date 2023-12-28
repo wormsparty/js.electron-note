@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer} from 'electron';
-import { Grid } from '../types';
+import { Grid } from './types';
 
 contextBridge.exposeInMainWorld('api', {
     load: async (name: string) => {

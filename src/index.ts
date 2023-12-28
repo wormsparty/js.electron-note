@@ -1,6 +1,7 @@
-import { Grid } from '../types';
+import { Grid } from './types';
+import { colors, obstacles } from './consts';
 
-let grid: Grid = undefined;
+let grid: Grid = {};
 
 let currentColor = 0;
 let mode = 'edit';
@@ -86,7 +87,7 @@ const draw = () => {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-	var consoleFont = new FontFace('Inconsolata', 'url(Inconsolata.ttf)');
+	var consoleFont = new FontFace('Inconsolata', 'url(./fonts/Inconsolata.ttf)');
 
 	consoleFont.load().then(async (font) => {
 		(<any>document).fonts.add(font);

@@ -1,4 +1,4 @@
-const colors = [
+export const colors = [
   '#FFFFFF', /* white */
   '#646464', /* gray */
   '#EF2929', /* red */
@@ -10,8 +10,8 @@ const colors = [
   '#050505', /* black */
 ];
 
-const items = '*$()[]%&/?!';
-const map = '<>^v+/';
-const characters = '@t';
-const obstacles = '#~.*';
+export const items = '*$()[]%&/?!';
+export const map = '<>^v+/';
+export const characters = '@t';
+export const obstacles = '#~.*';
 

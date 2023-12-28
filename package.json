@@ -1,18 +1,22 @@
 {
-  "name": "rogue-test",
+  "name": "my-new-app",
+  "productName": "my-new-app",
   "version": "1.0.0",
-  "description": "A rogue test",
-  "main": "dist/main.js",
+  "description": "My Electron application description",
+  "main": ".webpack/main",
   "scripts": {
-    "start": "tsc && electron-forge start",
-    "watch": "tsc -w",
-    "lint": "eslint src/",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "tsc && electron-forge package",
-    "make": "tsc && electron-forge make"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts,.tsx ."
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [],
+  "author": {
+    "name": "wormsparty",
+    "email": "wormsparty@gmail.com"
+  },
+  "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^7.2.0",
     "@electron-forge/maker-deb": "^7.2.0",
@@ -20,14 +24,23 @@
     "@electron-forge/maker-squirrel": "^7.2.0",
     "@electron-forge/maker-zip": "^7.2.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "@typescript-eslint/parser": "^6.16.0",
-    "electron": "^28.0.0",
+    "@electron-forge/plugin-webpack": "^7.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vercel/webpack-asset-relocator-loader": "^1.7.3",
+    "css-loader": "^6.8.1",
+    "electron": "28.1.0",
     "eslint": "^8.56.0",
-    "typescript": "^5.3.3"
+    "eslint-plugin-import": "^2.29.1",
+    "file-loader": "^6.2.0",
+    "fork-ts-checker-webpack-plugin": "^7.3.0",
+    "node-loader": "^2.0.0",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~4.5.4"
   },
   "dependencies": {
-    "electron-reload": "^2.0.0-alpha.1",
     "electron-squirrel-startup": "^1.0.0"
   }
 }

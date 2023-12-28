@@ -6,8 +6,7 @@ To run:
 - npm install
 - npm run start
 
-Editing live:
-- Press Ctrl+R to reload
+Reload done automatically on change.
 
-To deploy:
+To package:
 - npm run make
