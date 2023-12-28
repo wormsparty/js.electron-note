@@ -40,6 +40,6 @@ ipcMain.handle('load', (_, name) => {
     return io.load(name);
 });
 
-ipcMain.handle('save', (_, data) => {
-    return io.save(data);
+ipcMain.handle('save', (_, map) => {
+    return io.save(map);
 });

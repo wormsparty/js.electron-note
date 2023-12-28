@@ -5,8 +5,8 @@ contextBridge.exposeInMainWorld('api', {
     load: async (name: string) => {
         return await ipcRenderer.invoke("load", name);
     },
-    save: async (data: Grid) => {
-        return await ipcRenderer.invoke("save", data);
+    save: async (map: Grid) => {
+        return await ipcRenderer.invoke("save", map);
     },
 });
 
