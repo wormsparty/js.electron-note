@@ -9,6 +9,5 @@
 - Assign a color to a given character per layer.
   Don't edit color freely.
 - Be able to remove a map (if it doesn't leave orphans behind).
-- Animated ASCII?
 - What's the setting? What's the aim of the game?
 - Multi? C++?

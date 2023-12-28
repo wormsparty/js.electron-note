@@ -11,6 +11,11 @@ let question = '';
 let answer = '';
 let answered: (a: string) => void = undefined;
 
+const switchToMode = (newMode: string) => {
+  mode = newMode;
+  draw(`Mode: ${mode}`);
+}
+
 const draw = (singleMessage?: string) => {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   canvas.width = window.innerWidth;
@@ -88,9 +93,7 @@ const draw = (singleMessage?: string) => {
     ctx.fillText(singleMessage, 16, 48);	
   } else if (question) {
     ctx.fillText(question + answer, 16, 48);
-  } else if (mode !== 'play') {
-    ctx.fillText('Mode: ' + mode, 16, 48);
-  }
+  } 
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -253,12 +256,10 @@ window.addEventListener("keydown", async (event: any) => {
 	}
 	
 	if (event.key === 'F1') {
-		mode = 'item';
-		draw();
+		switchToMode('item');
 		return;
 	} else if (event.key === 'F2') { 
-		mode = 'text';
-		draw();
+		switchToMode('text');
 		return;
 	} else if (event.key === 'Delete') {
 		goTo(0);
@@ -289,7 +290,7 @@ window.addEventListener("keydown", async (event: any) => {
 
 	if (mode !== 'play') {
 		if (event.key === 'Escape') {
-			mode = 'play';
+			switchToMode('play');
 			return;
 		} else if (event.key >= '1' && event.key <= '9') {
 			const newColor = colors[event.key];
