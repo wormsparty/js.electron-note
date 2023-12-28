@@ -8,6 +8,9 @@ contextBridge.exposeInMainWorld('api', {
     save: async (map: Grid) => {
         return await ipcRenderer.invoke("save", map);
     },
+    fileExists: async (name: string) => {
+        return await ipcRenderer.invoke("fileExists", name);
+    },
 });
 
 window.addEventListener('DOMContentLoaded', () => {

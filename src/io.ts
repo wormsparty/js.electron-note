@@ -13,3 +13,7 @@ export const load = (name: string) => {
 export const save = (mapData: Grid) => {
 	fs.writeFileSync(`map/${mapData.name}`, JSON.stringify(mapData));
 };
+
+export const fileExists = (name: string) => {
+	return fs.existsSync(`map/${name}`);
+}

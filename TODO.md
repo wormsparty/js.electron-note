@@ -1,9 +1,13 @@
-- Edit / play mode
-- Display current character, change with 1-2, 3-4 and 5-6 for char / color / layer
-- Add walk logic: 
-  -> left + top should be done in one diagonal step
-  -> only walk on dots
-  -> change screen
+- Play mode:
+    > Start at @
+    > Move through dots, stop at the rest
+    > Left + top should do one diagonal step
+    > Change screen
+- Item:
+    > How do we place items?
+- Assign a color to a given character per layer.
+  Don't edit color freely.
+- Be able to remove a map (if it doesn't leave orphans behind).
 - Animated ASCII?
-- What do we do?
-- Multi?
+- What's the setting? What's the aim of the game?
+- Multi? C++?

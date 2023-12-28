@@ -43,3 +43,7 @@ ipcMain.handle('load', (_, name) => {
 ipcMain.handle('save', (_, map) => {
     return io.save(map);
 });
+
+ipcMain.handle('fileExists', (_, name) => {
+    return io.fileExists(name);
+});
