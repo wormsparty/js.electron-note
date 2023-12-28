@@ -1,7 +1,7 @@
 import { Grid } from './types';
 import { colors, obstacles } from './consts';
 
-let grid: Grid = {};
+let grid: Grid = {} as Grid;
 
 let currentColor = 0;
 let mode = 'edit';
