@@ -1,5 +1,5 @@
 import { Grid, State } from './types';
-import { colors, obstacles, textRegexp } from './consts';
+import { colors, obstacles, walkable, textRegexp } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
 let grid: Grid = {} as Grid;
@@ -145,57 +145,104 @@ window.addEventListener("resize", () => {
 	draw();
 });
 
-const moveLeft = () => {
-	if (state.currentX > 0) {
-		state.currentX--;
-		draw();
-	} else {
-		goTo(0);
+const move = (diffX: number, diffY: number): void => {
+	if (state.mode !== 'play') {
+		state.currentX += diffX;
+		state.currentY += diffY;
+		return;
 	}
-	
+
+	let x = state.currentX + diffX;
+	let y = state.currentY + diffY;
+
+	let symbol = grid.map[y][x];
+
+	if (walkable.indexOf(symbol) > -1) {
+		state.currentX = x;
+		state.currentY = y;
+    		return;
+	}
+
+	if (state.currentY !== y) {
+		symbol = grid.map[y][state.currentX];
+
+		if (walkable.indexOf(symbol) > -1) {
+			state.currentY = y;
+			return;
+		} else {
+        		if (state.currentX !== x) {
+          			symbol = grid.map[state.currentY][x];
+			}
+
+			if (walkable.indexOf(symbol) > -1) {
+				state.currentX = x;
+				return;
+			}
+		}
+	} else {
+      		symbol = grid.map[state.currentY][x];
+
+		if (walkable.indexOf(symbol) > -1) {
+			state.currentX = x;
+			return;
+		}
+	}
+}
+
+const moveLeft = () => {
+	if (state.currentX === 0) {
+		goTo(0);
+	} else {
+		move(-1, 0);
+		draw();
+	}
 };
 
 const moveRight = () => {
-	if (state.currentX < grid.width - 1) {
-		state.currentX++;
-		draw();
-	} else {
+	if (state.currentX === grid.width - 1) {
 		goTo(3);
+	} else {
+		move(1, 0);
+		draw();
 	}
 };
 
 const moveDown = () => {
-	if (state.currentY < grid.height - 1) {
-		state.currentY++;
-		draw();
-	} else {
+	if (state.currentY === grid.height - 1) {
 		goTo(2);
+	} else {
+		move(0, 1);
+		draw();
 	}
 };
 
 const moveUp = () => {
-	if (state.currentY > 0) {
-		state.currentY--;
-		draw();
-	} else {
+	if (state.currentY === 0) {
 		goTo(1);
+	} else {
+		move(0, -1);
+		draw();
 	}
 }
 
 const moveUpLeft = () => {
-	// TODO
+	move(-1, -1);
+	draw();
 };
 
 const moveUpRight = () => {
-	// TODO
+	move(1, -1);
+	draw();
 };
 
 const moveDownLeft = () => {
-	// TODO
+	move(-1, 1);
+	draw();
 };
 
 const moveDownRight = () => {
-	// TODO
+	move(1, 1);
+	draw();
 };
 
 const newMap = (name: string) => {

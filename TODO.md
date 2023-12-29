@@ -1,7 +1,5 @@
 - Play mode:
-  > Move through dots, stop at the rest
-  > Move diagonally, left+top is only one diagonal mouvement
-  > Support numeric pad
+  > Take into account keyup for better diagonal handling
 - Editor:
   > Support map layers, be able to place items
   > How do we define startX and startY on a map?
