@@ -1,19 +1,22 @@
-import { Grid } from './types';
+import { Grid, State } from './types';
 import { colors, obstacles } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
 let grid: Grid = {} as Grid;
-
-let currentColor = 0;
-let mode = 'play'; // item, text, play
-let layer = 'map'; // map, item, mob
-let question = '';
-let answer = '';
-let answered: (a: string) => void = undefined;
+let state: State = {
+	itemIndex: 0,
+	mode: 'play',
+	layer: 'map',
+	question: '',
+	answer: '',
+	answered: undefined,
+	currentX: 0,
+	currentY: 0,
+};
 
 const switchToMode = (newMode: string) => {
-  mode = newMode;
-  draw(`Mode: ${mode}`);
+  state.mode = newMode;
+  draw(`Mode: ${state.mode}`);
 }
 
 const draw = (singleMessage?: string) => {
@@ -56,9 +59,6 @@ const draw = (singleMessage?: string) => {
   let posx = 0;
   let posy = 16;
 
-  ctx.fillStyle = colors[currentColor];
-  ctx.fillRect(grid.currentX * 16, grid.currentY * 32, 16, 32);
-
   for (let j = 0; j < grid.height; j++) {
     let text = grid.map[j * grid.width];
     let color = grid.color[j * grid.width];
@@ -86,13 +86,26 @@ const draw = (singleMessage?: string) => {
     posy += 32;
     posx = 0;
   }
+ 
+  if (state.mode !== 'play') {
+    ctx.fillStyle = colors[0];
+    ctx.fillRect(state.currentX * 16, state.currentY * 32, 16, 32);
+  
+    if (state.mode === 'item') {
+      ctx.fillStyle = colors[8];
+      ctx.fillText(obstacles[state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
+    }
+  } else {
+    ctx.fillStyle = colors[2];
+    ctx.fillText('@', state.currentX * 16, state.currentY * 32 + 16);
+  }
 
   ctx.fillStyle = colors[0];
   
   if (singleMessage !== undefined) {
     ctx.fillText(singleMessage, 16, 48);	
-  } else if (question) {
-    ctx.fillText(question + answer, 16, 48);
+  } else if (state.question) {
+    ctx.fillText(state.question + state.answer, 16, 48);
   } 
 }
 
@@ -107,6 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
 			grid = newMap('default.json');
 		}
 
+		state.currentX = grid.startX;
+		state.currentY = grid.startY;
+
 		draw();
 	});
 });
@@ -116,8 +132,8 @@ window.addEventListener("resize", () => {
 });
 
 const moveLeft = () => {
-	if (grid.currentX > 0) {
-		grid.currentX--;
+	if (state.currentX > 0) {
+		state.currentX--;
 		draw();
 	} else {
 		goTo(0);
@@ -126,8 +142,8 @@ const moveLeft = () => {
 };
 
 const moveRight = () => {
-	if (grid.currentX < grid.width - 1) {
-		grid.currentX++;
+	if (state.currentX < grid.width - 1) {
+		state.currentX++;
 		draw();
 	} else {
 		goTo(3);
@@ -135,8 +151,8 @@ const moveRight = () => {
 };
 
 const moveDown = () => {
-	if (grid.currentY < grid.height - 1) {
-		grid.currentY++;
+	if (state.currentY < grid.height - 1) {
+		state.currentY++;
 		draw();
 	} else {
 		goTo(2);
@@ -144,8 +160,8 @@ const moveDown = () => {
 };
 
 const moveUp = () => {
-	if (grid.currentY > 0) {
-		grid.currentY--;
+	if (state.currentY > 0) {
+		state.currentY--;
 		draw();
 	} else {
 		goTo(1);
@@ -156,8 +172,8 @@ const newMap = (name: string) => {
 	const mapData: Grid = {
 		width: 64, 
 		height: 24,
-		currentX: 32,
-		currentY: 12,
+		startX: 32,
+		startY: 12,
 		map: [],
 		color: [],
 		neighbors: [null, null, null, null],
@@ -179,43 +195,43 @@ const goTo = async (index: number) => {
 	const map = grid.neighbors[index];
 
 	if (map !== null) {
-		const lastX = grid.currentX;
-		const lastY = grid.currentY;
+		const lastX = state.currentX;
+		const lastY = state.currentY;
 
 		grid = await (<any>window).api.load(map);
 		
 		if (index === 0) {
-			grid.currentX = grid.width - 1;
-			grid.currentY = lastY;
+			state.currentX = grid.width - 1;
+			state.currentY = lastY;
 		} else if (index === 1) {
-			grid.currentX = lastX;
-			grid.currentY = 0;
+			state.currentX = lastX;
+			state.currentY = 0;
 		} else if (index === 2) {
-			grid.currentX = lastX;
-			grid.currentY = grid.height - 1; 
+			state.currentX = lastX;
+			state.currentY = grid.height - 1; 
 		} else {
-			grid.currentX = 0;
-			grid.currentY = lastY;
+			state.currentX = 0;
+			state.currentY = lastY;
 		}
 
 		draw();
 		return;
 	}
 	
-	if (mode === 'play') {
+	if (state.mode === 'play') {
 		draw();
 		return;
 	}
 
 	// TODO: Ask for new / link to existing / delete
-	question = 'Enter new map name (or esc): ';
-	answer = '';
-	answered = async (answer: string) => {
+	state.question = 'Enter new map name (or esc): ';
+	state.answer = '';
+	state.answered = async (answer: string) => {
 		const newMapName = `${answer}.json`;
 		const fileExists = await (<any>window).api.fileExists(newMapName);
 
 		if (fileExists) {
-			question = '';
+			state.question = '';
 			draw('File already exists.');
 			return;
 		}
@@ -237,7 +253,7 @@ const goTo = async (index: number) => {
 
 		await (<any>window).api.save(newGrid);
 
-		question = '';
+		state.question = '';
 		grid = newGrid;
 		draw(`Map ${newMapName} created`);
 	}
@@ -246,8 +262,10 @@ const goTo = async (index: number) => {
 };
 
 const write = (chr: string) => {
-	grid.map[grid.currentX + grid.currentY * grid.width] = chr;
-	grid.color[grid.currentX + grid.currentY * grid.width] = currentColor;
+	grid.map[state.currentX + state.currentY * grid.width] = chr;
+
+	// TODO: Grid color should be deleted. Use mapping from char/layer to color instead.
+	grid.color[state.currentX + state.currentY * grid.width] = 0;
 };
 
 window.addEventListener("keydown", async (event: any) => {
@@ -257,15 +275,15 @@ window.addEventListener("keydown", async (event: any) => {
 		return;
 	}
 	
-	if (question) {
+	if (state.question) {
 		if (event.key.length === 1) {
-			answer += event.key;
+			state.answer += event.key;
 		} else if (event.key === 'Backspace') {
-			answer = answer.slice(0, -1);
+			state.answer = state.answer.slice(0, -1);
 		} else if (event.key === 'Enter') {
-			answered(answer);
+			state.answered(state.answer);
 		} else if (event.key === 'Escape') {
-			question = '';
+			state.question = '';
 		}
 
 		draw();
@@ -293,67 +311,54 @@ window.addEventListener("keydown", async (event: any) => {
 	}
 
 
-	if (mode !== 'play') {
+	if (state.mode !== 'play') {
 		if (event.key === 'Escape') {
 			switchToMode('play');
 			return;
-		} else if (event.key >= '1' && event.key <= '9') {
-			const newColor = colors[event.key];
-
-			if (newColor) {
-				currentColor = event.key;
-			}
-			
-			draw();
-			return;
 		} else if (event.key === 'Backspace') {	
 			moveLeft();	
-			const color = currentColor;
-			currentColor = 1;
 			write(' ');
-			currentColor = color;
 			return;
 		} else if (event.key === 'Enter') {
 			moveDown();
 			return;
 		} else if (event.key === ' ') {
-			const color = currentColor;
-			currentColor = 1;
-			write(' ');
-			currentColor = color;
-			moveRight();
-			return;
+			if (state.mode == 'item') {
+				write(obstacles[state.itemIndex]);
+				moveRight();
+				return;
+			}
 		}
 
-		if (mode === 'text') {
+		if (state.mode === 'text') {
 			if (event.key.length === 1) {
 				write(event.key);
 				moveRight();
 			}
 		} else {
-			if (event.key === 'q') {
-				write(obstacles[0]);
-				moveRight();
-			} else if (event.key == 'w') {
-				write(obstacles[1]);
-				moveRight();
-			} else if (event.key == 'e') {
-				write(obstacles[2]);
-				moveRight();
-			} else if (event.key == 'r') {
-				write(obstacles[3]);
-				moveRight();
-			}	
+			if (event.key === 'a') {
+				if (state.itemIndex > 0) {
+					state.itemIndex--;
+				} else {
+					state.itemIndex = obstacles.length - 1;
+				}
+			} else if (event.key == 's') {
+				if (state.itemIndex < obstacles.length - 1) {
+					state.itemIndex++;
+				} else {
+					state.itemIndex = 0;
+				}
+			}
 		}
 
 		draw();
 		return;
 	}
 
-	if (mode === 'play') {
+	if (state.mode === 'play') {
 		draw();
 		return;
 	}
 
-	console.log(`Unknown mode: ${mode}`);
+	console.log(`Unknown mode: ${state.mode}`);
 });

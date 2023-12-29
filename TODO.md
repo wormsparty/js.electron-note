@@ -1,13 +1,14 @@
-- Be able to remove a map (if it doesn't leave orphans behind).
-- Error if missing @ in default.json
+- How do we define startX and startY on a map?
+- Message: 'Mode: text. Esc to play. § for commands'
+- Menu with [esc]
 - Play mode:
-    > Start at @
     > Move through dots, stop at the rest
     > Left + top should do one diagonal step
-    > Change screen
+    > Support numeric pad
 - Item:
-    > How do we place items?
-- Assign a color to a given character per layer.
-  Don't edit color freely.
+    > Place different types of items
+    > Assign a color to a given character per layer.
+- Inventory?
+- Ennemies?
 - What's the setting? What's the aim of the game?
-- Multi? C++?
+- Be able to remove a map (if it doesn't leave orphans behind).

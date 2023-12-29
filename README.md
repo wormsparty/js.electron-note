@@ -14,9 +14,10 @@ To package:
 ## Controls
 
 - Arrows to move character or cursor around.
-- F1 to go to item placement mode.
-- F2 to go to text writing mode.
+- 'F1' to go to item placement mode.
+- 'F2' to go to text writing mode.
 - Escape to go back to play mode.
+- 'a' and 's' to change item to place. 'Space' to place.
 - Create a map by going in item or text mode and move to the desired screen border.
   Type in the map name, the file will be placed in `map/${name}.json`.
   Escape to cancel.
