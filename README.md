@@ -20,6 +20,7 @@ Modes:
 
 Play mode:
 - Arrows or numpad to move character around.
+- If you do not have a numpad, use shift + arrows to move diagonally.
 - TODO: Pickup items
 
 Item mode:

@@ -107,7 +107,7 @@ const draw = (singleMessage?: string) => {
       ctx.fillText(obstacles[state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
     }
   } else {
-    ctx.fillStyle = colors[8];
+    ctx.fillStyle = '#000000';
     ctx.fillRect(state.currentX * 16, state.currentY * 32, 16, 32);
     
     ctx.fillStyle = colors[2];
@@ -181,6 +181,22 @@ const moveUp = () => {
 		goTo(1);
 	}
 }
+
+const moveUpLeft = () => {
+	// TODO
+};
+
+const moveUpRight = () => {
+	// TODO
+};
+
+const moveDownLeft = () => {
+	// TODO
+};
+
+const moveDownRight = () => {
+	// TODO
+};
 
 const newMap = (name: string) => {
 	const mapData: Grid = {
@@ -307,19 +323,61 @@ window.addEventListener("keydown", async (event: any) => {
 		switchToMode('text');
 		return;
 	} else if (event.key === 'ArrowUp') {
-		moveUp();
+		if (event.shiftKey) {
+			moveUpRight();
+		} else {
+			moveUp();
+		}
 		return;
 	} else if (event.key === 'ArrowDown') {
-		moveDown();
+		if (event.shiftKey) {
+			moveDownLeft();
+		} else {
+			moveDown();
+		}
 		return;
 	} else if (event.key === 'ArrowLeft') {
-		moveLeft();
+		if (event.shiftKey) {
+			moveUpLeft();
+		} else {
+			moveLeft();
+		}
 		return;
 	} else if (event.key === 'ArrowRight') {
+		if (event.shiftKey) {
+			moveDownRight();		
+		} else {
+			moveRight();
+		}
+		return;
+	} else if (event.code === 'Numpad1') {
+		moveDownLeft();
+		return;
+	} else if (event.code === 'Numpad2') {
+		moveDown();
+		return;
+	} else if (event.code === 'Numpad3') {
+		moveDownRight();
+		return;
+	} else if (event.code === 'Numpad4') {
+		moveLeft();
+		return;
+	} else if (event.code === 'Numpad5') {
+		draw();
+		return;
+	} else if (event.code === 'Numpad6') {
 		moveRight();
 		return;
+	} else if (event.code === 'Numpad7') {
+		moveUpLeft();
+		return;
+	} else if (event.code === 'Numpad8') {
+		moveUp();
+		return;
+	} else if(event.code === 'Numpad9') {
+		moveUpRight();
+		return;
 	}
-
 
 	if (state.mode !== 'play') {
 		if (event.key === 'Escape') {

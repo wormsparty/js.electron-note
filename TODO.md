@@ -8,7 +8,7 @@
   > Message: 'Mode: text. Esc to play. § for commands'
   > Menu with [esc]
   > Display the commands ('a' and 's' to change item)
-  > TODO: Text color
+  > Should text be its own layer?
 - Inventory?
 - Ennemies?
 - What's the setting? What's the aim of the game?
