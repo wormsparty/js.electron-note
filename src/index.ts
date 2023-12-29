@@ -300,7 +300,7 @@ const newMap = (name: string) => {
 	return mapData;
 }
 
-const goTo = async (index: number): bool => {
+const goTo = async (index: number): Promise<boolean> => {
 	let newGrid;
 	const map = grid.neighbors[index];
 
