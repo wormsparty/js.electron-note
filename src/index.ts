@@ -1,5 +1,5 @@
 import { Grid, State } from './types';
-import { colors, obstacles } from './consts';
+import { colors, obstacles, textRegexp } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
 let grid: Grid = {} as Grid;
@@ -72,7 +72,7 @@ const draw = (singleMessage?: string) => {
         let color = grid.palette.get(text[0]);
 
 	if (!color) {
-	  color = 0;
+	  color = grid.palette.get('t') ?? 0;
 	}
 
         ctx.fillStyle = colors[color];
@@ -87,7 +87,7 @@ const draw = (singleMessage?: string) => {
       let color = grid.palette.get(text[0]);
 
       if (!color) {
-        color = 0;
+        color = grid.palette.get('t') ?? 0;
       }
 
       ctx.fillStyle = colors[color];
@@ -195,7 +195,6 @@ const newMap = (name: string) => {
 	}
 
 	for (let i = 0; i < mapData.height; i++) {
-		// Put gray dots by default
 		mapData.map[i] = '.'.repeat(mapData.width);
 	}
 	
@@ -346,7 +345,10 @@ window.addEventListener("keydown", async (event: any) => {
 		}
 
 		if (state.mode === 'text') {
-			if (event.key.length === 1) {
+			// Remove accents in regexp test.
+			const norm = event.key.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+			if (textRegexp.test(norm)) {
 				write(event.key);
 				moveRight();
 			}
@@ -368,7 +370,13 @@ window.addEventListener("keydown", async (event: any) => {
 		
 				if (!Number.isNaN(number)) {
 					const chr = grid.map[state.currentY][state.currentX];
-					grid.palette.set(chr, number);
+
+					// We use one single palette value 't' for all text.
+					if (textRegexp.test(chr) && chr !== '.') {
+						grid.palette.set('t', number);
+					} else {
+						grid.palette.set(chr, number);
+					}
 				}
 			}
 		}

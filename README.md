@@ -6,18 +6,35 @@ To run:
 - npm install
 - npm run start
 
-Reload done automatically on change.
+Reloads automatically on change.
 
 To package:
 - npm run make
 
 ## Controls
 
-- Arrows to move character or cursor around.
-- 'F1' to go to item placement mode.
-- 'F2' to go to text writing mode.
-- Escape to go back to play mode.
+Modes:
+- Play mode: by default, enabled with 'Escape'.
+- Item placement mode: enabled with 'F1'.
+- Text writing mode: enabled with 'F2'.
+
+Play mode:
+- Arrows or numpad to move character around.
+- TODO: Pickup items
+
+Item mode:
 - 'a' and 's' to change item to place. 'Space' to place.
-- Create a map by going in item or text mode and move to the desired screen border.
+- TODO: Change item type
+- TODO: Place mob
+
+Text mode:
+- Type text to place on map. Text color is one single palette element.
+
+In both Item and Text modes:
+- 1-9 to change the color palette of the selected character.
+  Text only has one color palette slot.
+- Move to the desired screen border to create a map.
   Type in the map name, the file will be placed in `map/${name}.json`.
-  Escape to cancel.
+- Press Ctrl+S to save map changes. Changing to a different room without
+  saving discards all changes.
+

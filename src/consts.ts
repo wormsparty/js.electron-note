@@ -15,3 +15,4 @@ export const map = '<>^v+/';
 export const characters = '@t';
 export const obstacles = '#~.*';
 
+export const textRegexp = new RegExp('^[a-zA-Z0-9 \.,!\?_\-]$');

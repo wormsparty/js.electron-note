@@ -1,13 +1,14 @@
+- Play mode:
+  > Move through dots, stop at the rest
+  > Move diagonally, left+top is only one diagonal mouvement
+  > Support numeric pad
 - Editor:
+  > Support map layers, be able to place items
   > How do we define startX and startY on a map?
   > Message: 'Mode: text. Esc to play. § for commands'
   > Menu with [esc]
   > Display the commands ('a' and 's' to change item)
-  > Change item type
-- Play mode:
-    > Move through dots, stop at the rest
-    > Left + top should do one diagonal step
-    > Support numeric pad
+  > TODO: Text color
 - Inventory?
 - Ennemies?
 - What's the setting? What's the aim of the game?
