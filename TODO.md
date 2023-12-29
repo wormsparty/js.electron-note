@@ -1,3 +1,4 @@
+- Adding a map should check for neighbors, like when creatig them in a circle
 - Play mode:
   > Take into account keyup for better diagonal handling
 - Editor:

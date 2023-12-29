@@ -155,6 +155,22 @@ const move = (diffX: number, diffY: number): void => {
 	let x = state.currentX + diffX;
 	let y = state.currentY + diffY;
 
+	if (x < 0) {
+		x = 0;
+	}
+
+	if (x > grid.width - 1) {
+		x = grid.width - 1;
+	}
+
+	if (y < 0) {
+		y = 0;
+	}
+
+	if (y > grid.height - 1) {
+		y = grid.height - 1;
+	}
+
 	let symbol = grid.map[y][x];
 
 	if (walkable.indexOf(symbol) > -1) {
@@ -226,23 +242,47 @@ const moveUp = () => {
 }
 
 const moveUpLeft = () => {
-	move(-1, -1);
-	draw();
+	if (state.currentY === 0) {
+		goTo(1);
+	} else if (state.currentX === 0) {
+		goTo(0);
+	} else {
+		move(-1, -1);
+		draw();
+	}
 };
 
 const moveUpRight = () => {
-	move(1, -1);
-	draw();
+	if (state.currentY === 0) {
+		goTo(1);
+	} else if (state.currentX === grid.width - 1) {
+		goTo(3);
+	} else {
+		move(1, -1);
+		draw();
+	}
 };
 
 const moveDownLeft = () => {
-	move(-1, 1);
-	draw();
+	if (state.currentY === grid.height - 1) {
+		goTo(2);
+	} else if (state.currentX === 0) {
+		goTo(0);
+	} else {
+		move(-1, 1);
+		draw();
+	}
 };
 
 const moveDownRight = () => {
-	move(1, 1);
-	draw();
+	if (state.currentY === grid.height - 1) {
+		goTo(2);
+	} else if (state.currentX === grid.width - 1) {
+		goTo(3);
+	} else {
+		move(1, 1);
+		draw();
+	}
 };
 
 const newMap = (name: string) => {
@@ -280,10 +320,10 @@ const goTo = async (index: number) => {
 			state.currentY = lastY;
 		} else if (index === 1) {
 			state.currentX = lastX;
-			state.currentY = 0;
+			state.currentY = grid.height - 1;
 		} else if (index === 2) {
 			state.currentX = lastX;
-			state.currentY = grid.height - 1; 
+			state.currentY = 0; 
 		} else {
 			state.currentX = 0;
 			state.currentY = lastY;
