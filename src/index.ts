@@ -60,26 +60,27 @@ const draw = (singleMessage?: string) => {
   let posy = 16;
 
   for (let j = 0; j < grid.height; j++) {
-    let text = grid.map[j * grid.width];
-    let color = grid.color[j * grid.width];
+    let line = grid.map[j];
+    let text = line[0];
 
     for (let i = 1; i < grid.width; i++) {
-      const newColor = grid.color[i + j * grid.width];
+      const chr = line[i];
 
-      if (color == newColor) {
-	text += grid.map[i + j * grid.width];
+      if (chr == text[0]) {
+        text += chr;
       } else {
-        ctx.fillStyle = colors[color];
+        // TODO: Use grid.palette
+        ctx.fillStyle = colors[0];
         ctx.fillText(text, posx, posy);
         posx += text.length * 16;
 
-	color = newColor;
-	text = grid.map[i + j * grid.width];
+	text = chr;
       }
     }
 
     if (text.length > 0) {
-      ctx.fillStyle = colors[color];
+      // TODO: Use grid.palette
+      ctx.fillStyle = colors[0];
       ctx.fillText(text, posx, posy);
     }
 
@@ -96,6 +97,9 @@ const draw = (singleMessage?: string) => {
       ctx.fillText(obstacles[state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
     }
   } else {
+    ctx.fillStyle = colors[8];
+    ctx.fillRect(state.currentX * 16, state.currentY * 32, 16, 32);
+    
     ctx.fillStyle = colors[2];
     ctx.fillText('@', state.currentX * 16, state.currentY * 32 + 16);
   }
@@ -170,20 +174,19 @@ const moveUp = () => {
 
 const newMap = (name: string) => {
 	const mapData: Grid = {
+		name: name,
 		width: 64, 
 		height: 24,
 		startX: 32,
 		startY: 12,
 		map: [],
-		color: [],
 		neighbors: [null, null, null, null],
-		name: name,
+		palette: new Map<string, string>(),
 	}
 
-	for (let i = 0; i < mapData.width * mapData.height; i++) {
+	for (let i = 0; i < mapData.height; i++) {
 		// Put gray dots by default
-		mapData.map[i] = '.';
-		mapData.color[i] = 1;
+		mapData.map[i] = '.'.repeat(mapData.width);
 	}
 	
 	console.log('Map ' + name + ' created');
@@ -262,10 +265,8 @@ const goTo = async (index: number) => {
 };
 
 const write = (chr: string) => {
-	grid.map[state.currentX + state.currentY * grid.width] = chr;
-
-	// TODO: Grid color should be deleted. Use mapping from char/layer to color instead.
-	grid.color[state.currentX + state.currentY * grid.width] = 0;
+	const line = grid.map[state.currentY];
+	grid.map[state.currentY] = line.substring(0, state.currentX) + chr + line.substring(state.currentX + 1);
 };
 
 window.addEventListener("keydown", async (event: any) => {
@@ -316,8 +317,12 @@ window.addEventListener("keydown", async (event: any) => {
 			switchToMode('play');
 			return;
 		} else if (event.key === 'Backspace') {	
-			moveLeft();	
+			moveLeft();
 			write(' ');
+			return;
+		} else if (event.key === 'Delete') {	
+			write(' ');
+			moveRight();	
 			return;
 		} else if (event.key === 'Enter') {
 			moveDown();

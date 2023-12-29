@@ -1,12 +1,12 @@
 export interface Grid {
+        name: string,
 	width: number, 
 	height: number,
         startX: number,
         startY: number,
         map: Array<string>,
-        color: Array<number>,
         neighbors: Array<string>,
-        name: string,
+	palette: Map<string, string>,
 };
 
 export interface State {

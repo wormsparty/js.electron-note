@@ -11,7 +11,7 @@ export const load = (name: string) => {
 };
 
 export const save = (mapData: Grid) => {
-	fs.writeFileSync(`map/${mapData.name}`, JSON.stringify(mapData));
+	fs.writeFileSync(`map/${mapData.name}`, JSON.stringify(mapData, null, 2));
 };
 
 export const fileExists = (name: string) => {
