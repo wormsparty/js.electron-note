@@ -8,7 +8,6 @@
   > Menu with [esc]
   > Display the commands ('a' and 's' to change item)
   > Should text be its own layer?
-- Diagonal in corners has issues
 - Stairs
 - Inventory?
 - Ennemies?

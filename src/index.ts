@@ -214,70 +214,70 @@ const moveUp = async () => {
 
 const moveUpLeft = async () => {
 	if (state.currentY === 0) {
-		if (!await goTo(1)) {
-			move(-1, -1);
-			draw();
+		if (await goTo(1)) {
+			return;
 		}
-	} else if (state.currentX === 0) {
-		if (!await goTo(0)) {
-			move(-1, -1);
-			draw();
-		}
-	} else {
-		move(-1, -1);
-		draw();
 	}
+
+	if (state.currentX === 0) {
+		if (await goTo(0)) {
+			return;
+		}
+	}
+
+	move(-1, -1);
+	draw();
 };
 
 const moveUpRight = async () => {
 	if (state.currentY === 0) {
-		if (!await goTo(1)) {
-			move(1, -1);
-			draw();
+		if (await goTo(1)) {
+			return;
 		}
-	} else if (state.currentX === grid.width - 1) {
-		if (!await goTo(3)) {
-			move(1, -1);
-			draw();
-		}
-	} else {
-		move(1, -1);
-		draw();
 	}
+
+	if (state.currentX === grid.width - 1) {
+		if (await goTo(3)) {
+			return;
+		}
+	}
+
+	move(1, -1);
+	draw();
 };
 
 const moveDownLeft = async () => {
 	if (state.currentY === grid.height - 1) {
-		if (!await goTo(2)) {
-			move(-1, 1);
-			draw();
+		if (await goTo(2)) {
+			return;
 		}
-	} else if (state.currentX === 0) {
-		if (!await goTo(0)) {
-			move(-1, 1);
-			draw();
-		}
-	} else {
-		move(-1, 1);
-		draw();
 	}
+
+	if (state.currentX === 0) {
+		if (await goTo(0)) {
+			return;
+		}
+	}
+	
+	move(-1, 1);
+	draw();
 };
 
 const moveDownRight = async () => {
 	if (state.currentY === grid.height - 1) {
-		if (!await goTo(2)) {
-			move(1, 1);
-			draw();
+		if (await goTo(2)) {
+			return;
 		}
-	} else if (state.currentX === grid.width - 1) {
-		if (!await goTo(3)) {
-			move(1, 1);
-			draw();
-		}
-	} else {
-		move(1, 1);
-		draw();
 	}
+
+	if (state.currentX === grid.width - 1) {
+		if (await goTo(3)) {
+			return;
+		}
+	}
+
+	move(1, 1);
+	draw();
 };
 
 const newMap = (name: string) => {
