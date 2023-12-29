@@ -10,7 +10,6 @@ export interface Grid {
 };
 
 export interface State {
-	currentColor: number,
 	itemIndex: number,
 	mode: 'item' | 'text' | 'play',
 	layer: 'map' | 'item' | 'mob',

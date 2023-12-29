@@ -14,7 +14,7 @@ let state: State = {
 	currentY: 0,
 };
 
-const switchToMode = (newMode: string) => {
+const switchToMode = (newMode: 'play' | 'text' | 'item') => {
   state.mode = newMode;
   draw(`Mode: ${state.mode}`);
 }
