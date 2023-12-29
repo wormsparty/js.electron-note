@@ -1,4 +1,4 @@
-- Adding a map should check for neighbors, like when creatig them in a circle
+- Adding a map should check for neighbors, like when creating them in a circle
 - Play mode:
   > Take into account keyup for better diagonal handling
 - Editor:
@@ -8,6 +8,7 @@
   > Menu with [esc]
   > Display the commands ('a' and 's' to change item)
   > Should text be its own layer?
+- Diagonal in corners has issues
 - Stairs
 - Inventory?
 - Ennemies?
