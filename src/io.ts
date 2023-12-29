@@ -3,7 +3,13 @@ import { Grid } from './types';
 
 export const load = (name: string) => {
 	try {
-		return JSON.parse(fs.readFileSync(`map/${name}`, { encoding: 'utf8', flag: 'r' }));
+		const grid = JSON.parse(fs.readFileSync(`map/${name}`, { encoding: 'utf8', flag: 'r' }));
+		if (grid.palette) {
+			// Object needs to be converted to Map
+			grid.palette = new Map(Object.entries(grid.palette));
+		}
+
+		return grid;
 	} catch (error) {
 		console.log(error);
 		return null;		
@@ -11,7 +17,11 @@ export const load = (name: string) => {
 };
 
 export const save = (mapData: Grid) => {
-	fs.writeFileSync(`map/${mapData.name}`, JSON.stringify(mapData, null, 2));
+	const data: any = Object.assign({}, mapData);
+	data['palette'] = Object.fromEntries(mapData.palette);
+	console.log(data);
+
+	fs.writeFileSync(`map/${mapData.name}`, JSON.stringify(data, null, 2));
 };
 
 export const fileExists = (name: string) => {

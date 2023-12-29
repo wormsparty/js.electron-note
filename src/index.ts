@@ -69,8 +69,13 @@ const draw = (singleMessage?: string) => {
       if (chr == text[0]) {
         text += chr;
       } else {
-        // TODO: Use grid.palette
-        ctx.fillStyle = colors[0];
+        let color = grid.palette.get(text[0]);
+
+	if (!color) {
+	  color = 0;
+	}
+
+        ctx.fillStyle = colors[color];
         ctx.fillText(text, posx, posy);
         posx += text.length * 16;
 
@@ -79,8 +84,13 @@ const draw = (singleMessage?: string) => {
     }
 
     if (text.length > 0) {
-      // TODO: Use grid.palette
-      ctx.fillStyle = colors[0];
+      let color = grid.palette.get(text[0]);
+
+      if (!color) {
+        color = 0;
+      }
+
+      ctx.fillStyle = colors[color];
       ctx.fillText(text, posx, posy);
     }
 
@@ -181,7 +191,7 @@ const newMap = (name: string) => {
 		startY: 12,
 		map: [],
 		neighbors: [null, null, null, null],
-		palette: new Map<string, string>(),
+		palette: new Map<string, number>(),
 	}
 
 	for (let i = 0; i < mapData.height; i++) {
@@ -347,11 +357,18 @@ window.addEventListener("keydown", async (event: any) => {
 				} else {
 					state.itemIndex = obstacles.length - 1;
 				}
-			} else if (event.key == 's') {
+			} else if (event.key === 's') {
 				if (state.itemIndex < obstacles.length - 1) {
 					state.itemIndex++;
 				} else {
 					state.itemIndex = 0;
+				}
+			} else {
+				const number = Number(event.key);
+		
+				if (!Number.isNaN(number)) {
+					const chr = grid.map[state.currentY][state.currentX];
+					grid.palette.set(chr, number);
 				}
 			}
 		}

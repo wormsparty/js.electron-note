@@ -6,7 +6,7 @@ export interface Grid {
         startY: number,
         map: Array<string>,
         neighbors: Array<string>,
-	palette: Map<string, string>,
+	palette: Map<string, number>,
 };
 
 export interface State {
