@@ -176,80 +176,104 @@ const move = (diffX: number, diffY: number): void => {
 	}
 }
 
-const moveLeft = () => {
+const moveLeft = async () => {
 	if (state.currentX === 0) {
-		goTo(0);
+		await goTo(0);
 	} else {
 		move(-1, 0);
 		draw();
 	}
 };
 
-const moveRight = () => {
+const moveRight = async () => {
 	if (state.currentX === grid.width - 1) {
-		goTo(3);
+		await goTo(3);
 	} else {
 		move(1, 0);
 		draw();
 	}
 };
 
-const moveDown = () => {
+const moveDown = async () => {
 	if (state.currentY === grid.height - 1) {
-		goTo(2);
+		await goTo(2);
 	} else {
 		move(0, 1);
 		draw();
 	}
 };
 
-const moveUp = () => {
+const moveUp = async () => {
 	if (state.currentY === 0) {
-		goTo(1);
+		await goTo(1);
 	} else {
 		move(0, -1);
 		draw();
 	}
 }
 
-const moveUpLeft = () => {
+const moveUpLeft = async () => {
 	if (state.currentY === 0) {
-		goTo(1);
+		if (!await goTo(1)) {
+			move(-1, -1);
+			draw();
+		}
 	} else if (state.currentX === 0) {
-		goTo(0);
+		if (!await goTo(0)) {
+			move(-1, -1);
+			draw();
+		}
 	} else {
 		move(-1, -1);
 		draw();
 	}
 };
 
-const moveUpRight = () => {
+const moveUpRight = async () => {
 	if (state.currentY === 0) {
-		goTo(1);
+		if (!await goTo(1)) {
+			move(1, -1);
+			draw();
+		}
 	} else if (state.currentX === grid.width - 1) {
-		goTo(3);
+		if (!await goTo(3)) {
+			move(1, -1);
+			draw();
+		}
 	} else {
 		move(1, -1);
 		draw();
 	}
 };
 
-const moveDownLeft = () => {
+const moveDownLeft = async () => {
 	if (state.currentY === grid.height - 1) {
-		goTo(2);
+		if (!await goTo(2)) {
+			move(-1, 1);
+			draw();
+		}
 	} else if (state.currentX === 0) {
-		goTo(0);
+		if (!await goTo(0)) {
+			move(-1, 1);
+			draw();
+		}
 	} else {
 		move(-1, 1);
 		draw();
 	}
 };
 
-const moveDownRight = () => {
+const moveDownRight = async () => {
 	if (state.currentY === grid.height - 1) {
-		goTo(2);
+		if (!await goTo(2)) {
+			move(1, 1);
+			draw();
+		}
 	} else if (state.currentX === grid.width - 1) {
-		goTo(3);
+		if (!await goTo(3)) {
+			move(1, 1);
+			draw();
+		}
 	} else {
 		move(1, 1);
 		draw();
@@ -276,7 +300,7 @@ const newMap = (name: string) => {
 	return mapData;
 }
 
-const goTo = async (index: number) => {
+const goTo = async (index: number): bool => {
 	let newGrid;
 	const map = grid.neighbors[index];
 
@@ -301,12 +325,12 @@ const goTo = async (index: number) => {
 		}
 
 		draw();
-		return;
+		return true;
 	}
 	
 	if (state.mode === 'play') {
 		draw();
-		return;
+		return false;
 	}
 
 	// TODO: Ask for new / link to existing / delete
@@ -345,6 +369,7 @@ const goTo = async (index: number) => {
 	}
 
 	draw();
+	return true;
 };
 
 const write = (chr: string) => {
@@ -382,58 +407,58 @@ window.addEventListener("keydown", async (event: any) => {
 		return;
 	} else if (event.key === 'ArrowUp') {
 		if (event.shiftKey) {
-			moveUpRight();
+			await moveUpRight();
 		} else {
-			moveUp();
+			await moveUp();
 		}
 		return;
 	} else if (event.key === 'ArrowDown') {
 		if (event.shiftKey) {
-			moveDownLeft();
+			await moveDownLeft();
 		} else {
-			moveDown();
+			await moveDown();
 		}
 		return;
 	} else if (event.key === 'ArrowLeft') {
 		if (event.shiftKey) {
-			moveUpLeft();
+			await moveUpLeft();
 		} else {
-			moveLeft();
+			await moveLeft();
 		}
 		return;
 	} else if (event.key === 'ArrowRight') {
 		if (event.shiftKey) {
-			moveDownRight();		
+			await moveDownRight();		
 		} else {
-			moveRight();
+			await moveRight();
 		}
 		return;
 	} else if (event.code === 'Numpad1') {
-		moveDownLeft();
+		await moveDownLeft();
 		return;
 	} else if (event.code === 'Numpad2') {
-		moveDown();
+		await moveDown();
 		return;
 	} else if (event.code === 'Numpad3') {
-		moveDownRight();
+		await moveDownRight();
 		return;
 	} else if (event.code === 'Numpad4') {
-		moveLeft();
+		await moveLeft();
 		return;
 	} else if (event.code === 'Numpad5') {
 		draw();
 		return;
 	} else if (event.code === 'Numpad6') {
-		moveRight();
+		await moveRight();
 		return;
 	} else if (event.code === 'Numpad7') {
-		moveUpLeft();
+		await moveUpLeft();
 		return;
 	} else if (event.code === 'Numpad8') {
-		moveUp();
+		await moveUp();
 		return;
 	} else if(event.code === 'Numpad9') {
-		moveUpRight();
+		await moveUpRight();
 		return;
 	}
 
