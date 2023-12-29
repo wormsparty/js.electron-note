@@ -7,6 +7,7 @@
   > Menu with [esc]
   > Display the commands ('a' and 's' to change item)
   > Should text be its own layer?
+- Stairs
 - Inventory?
 - Ennemies?
 - What's the setting? What's the aim of the game?
