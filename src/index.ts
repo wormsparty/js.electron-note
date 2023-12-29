@@ -146,59 +146,30 @@ window.addEventListener("resize", () => {
 });
 
 const move = (diffX: number, diffY: number): void => {
+	let x = Math.max(Math.min(state.currentX + diffX, grid.width  - 1), 0);
+	let y = Math.max(Math.min(state.currentY + diffY, grid.height - 1), 0);
+	
 	if (state.mode !== 'play') {
-		state.currentX += diffX;
-		state.currentY += diffY;
+		state.currentX = x;
+		state.currentY = y;
 		return;
 	}
 
-	let x = state.currentX + diffX;
-	let y = state.currentY + diffY;
-
-	if (x < 0) {
-		x = 0;
-	}
-
-	if (x > grid.width - 1) {
-		x = grid.width - 1;
-	}
-
-	if (y < 0) {
-		y = 0;
-	}
-
-	if (y > grid.height - 1) {
-		y = grid.height - 1;
-	}
-
-	let symbol = grid.map[y][x];
-
-	if (walkable.indexOf(symbol) > -1) {
+	if (walkable.indexOf(grid.map[y][x]) > -1) {
 		state.currentX = x;
 		state.currentY = y;
     		return;
 	}
 
 	if (state.currentY !== y) {
-		symbol = grid.map[y][state.currentX];
-
-		if (walkable.indexOf(symbol) > -1) {
+		if (walkable.indexOf(grid.map[y][state.currentX]) > -1) {
 			state.currentY = y;
 			return;
-		} else {
-        		if (state.currentX !== x) {
-          			symbol = grid.map[state.currentY][x];
-			}
+		} 
+	}
 
-			if (walkable.indexOf(symbol) > -1) {
-				state.currentX = x;
-				return;
-			}
-		}
-	} else {
-      		symbol = grid.map[state.currentY][x];
-
-		if (walkable.indexOf(symbol) > -1) {
+       	if (state.currentX !== x) {
+		if (walkable.indexOf(grid.map[state.currentY][x]) > -1) {
 			state.currentX = x;
 			return;
 		}

@@ -13,3 +13,4 @@
 - Ennemies?
 - What's the setting? What's the aim of the game?
 - Be able to remove a map (if it doesn't leave orphans behind).
+- Animated ASCII
