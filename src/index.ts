@@ -1,5 +1,5 @@
 import { Grid, State } from './types';
-import { colors, obstacles, walkable, textRegexp } from './consts';
+import { colors, tiles, textRegexp } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
 let grid: Grid = {} as Grid;
@@ -103,8 +103,24 @@ const draw = (singleMessage?: string) => {
     ctx.fillRect(state.currentX * 16, state.currentY * 32, 16, 32);
   
     if (state.mode === 'item') {
+      const itemTypes = Object.keys(tiles);
+      let x = 16;
+
+      for (let i = 0; i < itemTypes.length; i++) {
+        const itemType = itemTypes[i];
+
+        if (itemType === state.itemType) {
+          ctx.fillStyle = colors[1];
+        } else {
+          ctx.fillStyle = colors[0];
+	}
+
+        ctx.fillText(itemType, x, 80);
+        x += (itemTypes[i].length + 1) * 16;
+      }
+
       ctx.fillStyle = colors[8];
-      ctx.fillText(obstacles[state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
+      ctx.fillText(tiles[state.itemType][state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
     }
   } else {
     ctx.fillStyle = '#000000';
@@ -123,8 +139,8 @@ const draw = (singleMessage?: string) => {
   } 
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-	var consoleFont = new FontFace('Inconsolata', `url(${font})`);
+document.addEventListener('DOMContentLoaded', () => {
+	const consoleFont = new FontFace('Inconsolata', `url(${font})`);
 
 	consoleFont.load().then(async (font) => {
 		(<any>document).fonts.add(font);
@@ -136,12 +152,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		state.currentX = grid.startX;
 		state.currentY = grid.startY;
+		state.itemType = Object.keys(tiles)[0];
+		state.itemIndex = 0;
 
 		draw();
 	});
 });
 
-window.addEventListener("resize", () => {
+window.addEventListener('resize', () => {
 	draw();
 });
 
@@ -154,6 +172,8 @@ const move = (diffX: number, diffY: number): void => {
 		state.currentY = y;
 		return;
 	}
+
+	const walkable = tiles['walkable'];
 
 	if (walkable.indexOf(grid.map[y][x]) > -1) {
 		state.currentX = x;
@@ -377,7 +397,7 @@ const write = (chr: string) => {
 	grid.map[state.currentY] = line.substring(0, state.currentX) + chr + line.substring(state.currentX + 1);
 };
 
-window.addEventListener("keydown", async (event: any) => {
+window.addEventListener('keydown', async (event: any) => {
 	if (event.ctrlKey && event.key === 's') {
 		await (<any>window).api.save(grid);
 		draw(`Saved successfully.`);
@@ -479,7 +499,7 @@ window.addEventListener("keydown", async (event: any) => {
 			return;
 		} else if (event.key === ' ') {
 			if (state.mode == 'item') {
-				write(obstacles[state.itemIndex]);
+				write(tiles[state.itemType][state.itemIndex]);
 				moveRight();
 				return;
 			}
@@ -487,21 +507,43 @@ window.addEventListener("keydown", async (event: any) => {
 
 		if (state.mode === 'text') {
 			// Remove accents in regexp test.
-			const norm = event.key.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+			const norm = event.key.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
 
 			if (textRegexp.test(norm)) {
 				write(event.key);
 				moveRight();
 			}
 		} else {
-			if (event.key === 'a') {
+			if (event.key === 'q') {
+				const itemTypes = Object.keys(tiles);
+				const currentIndex = itemTypes.indexOf(state.itemType);
+
+				if (currentIndex > 0) {
+					state.itemType = itemTypes[currentIndex - 1];
+				} else {
+					state.itemType = itemTypes[itemTypes.length - 1];
+				}
+
+				state.itemIndex = 0;
+			} else if (event.key === 'w') {
+				const itemTypes = Object.keys(tiles);
+				const currentIndex = itemTypes.indexOf(state.itemType);
+
+				if (currentIndex < itemTypes.length - 1) {
+					state.itemType = itemTypes[currentIndex + 1];
+				} else {
+					state.itemType = itemTypes[0];
+				}
+
+				state.itemIndex = 0;
+			} else if (event.key === 'a') {
 				if (state.itemIndex > 0) {
 					state.itemIndex--;
 				} else {
-					state.itemIndex = obstacles.length - 1;
+					state.itemIndex = tiles[state.itemType].length - 1;
 				}
 			} else if (event.key === 's') {
-				if (state.itemIndex < obstacles.length - 1) {
+				if (state.itemIndex < tiles[state.itemType].length - 1) {
 					state.itemIndex++;
 				} else {
 					state.itemIndex = 0;

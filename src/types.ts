@@ -11,6 +11,7 @@ export interface Grid {
 
 export interface State {
 	itemIndex: number,
+	itemType: string,
 	mode: 'item' | 'text' | 'play',
 	layer: 'map' | 'item' | 'mob',
 	question: string,

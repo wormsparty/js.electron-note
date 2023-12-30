@@ -1,3 +1,5 @@
+- We can't set a tile in the right border, we get instantly teleported to the next room.
+- Missing background behind item types
 - Adding a map should check for neighbors, like when creating them in a circle
 - Play mode:
   > Take into account keyup for better diagonal handling
