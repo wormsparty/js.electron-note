@@ -204,8 +204,8 @@ const moveLeft = async () => {
 	}
 };
 
-const moveRight = async () => {
-	if (state.currentX === grid.width - 1) {
+const moveRight = async (allowScreenChange = false) => {
+	if (state.currentX === grid.width - 1 && allowScreenChange) {
 		await goTo(3);
 	} else {
 		move(1, 0);
