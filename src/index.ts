@@ -204,7 +204,7 @@ const moveLeft = async () => {
 	}
 };
 
-const moveRight = async (allowScreenChange = false) => {
+const moveRight = async (allowScreenChange: boolean) => {
 	if (state.currentX === grid.width - 1 && allowScreenChange) {
 		await goTo(3);
 	} else {
@@ -449,7 +449,7 @@ window.addEventListener('keydown', async (event: any) => {
 		if (event.shiftKey) {
 			await moveDownRight();		
 		} else {
-			await moveRight();
+			await moveRight(true);
 		}
 		return;
 	} else if (event.code === 'Numpad1') {
@@ -468,7 +468,7 @@ window.addEventListener('keydown', async (event: any) => {
 		draw();
 		return;
 	} else if (event.code === 'Numpad6') {
-		await moveRight();
+		await moveRight(true);
 		return;
 	} else if (event.code === 'Numpad7') {
 		await moveUpLeft();
@@ -491,7 +491,7 @@ window.addEventListener('keydown', async (event: any) => {
 			return;
 		} else if (event.key === 'Delete') {	
 			write(' ');
-			moveRight();	
+			moveRight(false);
 			return;
 		} else if (event.key === 'Enter') {
 			moveDown();
@@ -499,7 +499,7 @@ window.addEventListener('keydown', async (event: any) => {
 		} else if (event.key === ' ') {
 			if (state.mode == 'item') {
 				write(tiles.get(state.itemType)[state.itemIndex]);
-				moveRight();
+				moveRight(false);
 				return;
 			}
 		}
@@ -510,7 +510,7 @@ window.addEventListener('keydown', async (event: any) => {
 
 			if (textRegexp.test(norm)) {
 				write(event.key);
-				moveRight();
+				moveRight(false);
 			}
 		} else {
 			if (event.key === 'q') {
