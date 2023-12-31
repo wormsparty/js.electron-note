@@ -5,6 +5,7 @@ import font from '../assets/Inconsolata.ttf';
 let grid: Grid = {} as Grid;
 let state: State = {
 	itemIndex: 0,
+	itemType: '',
 	mode: 'play',
 	layer: 'map',
 	question: '',
@@ -103,7 +104,7 @@ const draw = (singleMessage?: string) => {
     ctx.fillRect(state.currentX * 16, state.currentY * 32, 16, 32);
   
     if (state.mode === 'item') {
-      const itemTypes = Object.keys(tiles);
+      const itemTypes = Array.from(tiles.keys());
       let x = 16;
 
       for (let i = 0; i < itemTypes.length; i++) {
@@ -120,7 +121,7 @@ const draw = (singleMessage?: string) => {
       }
 
       ctx.fillStyle = colors[8];
-      ctx.fillText(tiles[state.itemType][state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
+      ctx.fillText(tiles.get(state.itemType)[state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
     }
   } else {
     ctx.fillStyle = '#000000';
@@ -152,9 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		state.currentX = grid.startX;
 		state.currentY = grid.startY;
-		state.itemType = Object.keys(tiles)[0];
-		state.itemIndex = 0;
-
+		state.itemType = tiles.keys().next().value;
 		draw();
 	});
 });
@@ -173,7 +172,7 @@ const move = (diffX: number, diffY: number): void => {
 		return;
 	}
 
-	const walkable = tiles['walkable'];
+	const walkable = tiles.get('walkable');
 
 	if (walkable.indexOf(grid.map[y][x]) > -1) {
 		state.currentX = x;
@@ -499,7 +498,7 @@ window.addEventListener('keydown', async (event: any) => {
 			return;
 		} else if (event.key === ' ') {
 			if (state.mode == 'item') {
-				write(tiles[state.itemType][state.itemIndex]);
+				write(tiles.get(state.itemType)[state.itemIndex]);
 				moveRight();
 				return;
 			}
@@ -515,7 +514,7 @@ window.addEventListener('keydown', async (event: any) => {
 			}
 		} else {
 			if (event.key === 'q') {
-				const itemTypes = Object.keys(tiles);
+				const itemTypes = Array.from(tiles.keys());
 				const currentIndex = itemTypes.indexOf(state.itemType);
 
 				if (currentIndex > 0) {
@@ -526,7 +525,7 @@ window.addEventListener('keydown', async (event: any) => {
 
 				state.itemIndex = 0;
 			} else if (event.key === 'w') {
-				const itemTypes = Object.keys(tiles);
+				const itemTypes = Array.from(tiles.keys());
 				const currentIndex = itemTypes.indexOf(state.itemType);
 
 				if (currentIndex < itemTypes.length - 1) {
@@ -540,10 +539,10 @@ window.addEventListener('keydown', async (event: any) => {
 				if (state.itemIndex > 0) {
 					state.itemIndex--;
 				} else {
-					state.itemIndex = tiles[state.itemType].length - 1;
+					state.itemIndex = tiles.get(state.itemType).length - 1;
 				}
 			} else if (event.key === 's') {
-				if (state.itemIndex < tiles[state.itemType].length - 1) {
+				if (state.itemIndex < tiles.get(state.itemType).length - 1) {
 					state.itemIndex++;
 				} else {
 					state.itemIndex = 0;
