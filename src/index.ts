@@ -3,6 +3,9 @@ import { colors, tiles, textRegexp } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
 let grid = {} as Grid;
+
+let globalMap = new Map<string, [number, number]>();
+
 const state: State = {
 	itemIndex: 0,
 	itemType: '',
@@ -145,10 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	consoleFont.load().then(async (font) => {
 		(<any>document).fonts.add(font);
-		grid = await (<any>window).api.load('default.json');
+
+		globalMap = await (<any>window).api.loadGlobal('global.json');
+		grid = await (<any>window).api.loadMap('default.json');
 
 		if (grid === null) {
 			grid = newMap('default.json');
+			globalMap.set('default.json', [0, 0]);
 		}
 
 		state.currentX = grid.startX;
@@ -327,7 +333,7 @@ const goTo = async (index: number): Promise<boolean> => {
 		const lastX = state.currentX;
 		const lastY = state.currentY;
 
-		grid = await (<any>window).api.load(map);
+		grid = await (<any>window).api.loadMap(map);
 		
 		if (index === 0) {
 			state.currentX = grid.width - 1;
@@ -365,22 +371,35 @@ const goTo = async (index: number): Promise<boolean> => {
 			return;
 		}
 
-		grid.neighbors[index] = newMapName;
-		await (<any>window).api.save(grid);
+		// Update the map with all known neighbors
+		// TODO
+		//for (const value in globalMap.values) {
+			grid.neighbors[index] = newMapName;
+			await (<any>window).api.saveMap(grid);
+		//}
 
 		newGrid = newMap(newMapName);
+		
+		let [newX, newY] = globalMap.get(grid.name);
 
 		if (index === 0) {
 			newGrid.neighbors[3] = grid.name;
+			newX--;
 		} else if (index === 1) {
 			newGrid.neighbors[2] = grid.name;
+			newY--;
 		} else if (index === 2) {
 			newGrid.neighbors[1] = grid.name;
+			newY++;
 		} else {
 			newGrid.neighbors[0] = grid.name;
+			newX++;
 		}
 
-		await (<any>window).api.save(newGrid);
+		globalMap.set(newMapName, [newX, newY]);
+
+		await (<any>window).api.saveGlobal(globalMap);
+		await (<any>window).api.saveMap(newGrid);
 
 		state.question = '';
 		grid = newGrid;
@@ -398,7 +417,7 @@ const write = (chr: string) => {
 
 window.addEventListener('keydown', async (event: any) => {
 	if (event.ctrlKey && event.key === 's') {
-		await (<any>window).api.save(grid);
+		await (<any>window).api.saveMap(grid);
 		draw(`Saved successfully.`);
 		return;
 	}

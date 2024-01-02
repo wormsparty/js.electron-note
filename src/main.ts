@@ -36,12 +36,20 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.handle('load', (_, name) => {
-    return io.load(name);
+ipcMain.handle('loadGlobal', (_) => {
+    return io.loadGlobal();
 });
 
-ipcMain.handle('save', (_, map) => {
-    return io.save(map);
+ipcMain.handle('loadMap', (_, name) => {
+    return io.loadMap(name);
+});
+
+ipcMain.handle('saveGlobal', (_, map) => {
+    return io.saveGlobal(map);
+});
+
+ipcMain.handle('saveMap', (_, map) => {
+    return io.saveMap(map);
 });
 
 ipcMain.handle('fileExists', (_, name) => {

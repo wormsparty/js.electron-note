@@ -1,7 +1,17 @@
 import * as fs from 'fs';
 import { Grid } from './types';
 
-export const load = (name: string) => {
+export const loadGlobal = () => {
+	try {
+		const global = JSON.parse(fs.readFileSync(`map/global.json`, { encoding: 'utf8', flag: 'r' }));
+		return new Map(Object.entries(global));
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};
+
+export const loadMap = (name: string) => {
 	try {
 		const grid = JSON.parse(fs.readFileSync(`map/${name}`, { encoding: 'utf8', flag: 'r' }));
 		if (grid.palette) {
@@ -16,11 +26,14 @@ export const load = (name: string) => {
 	}
 };
 
-export const save = (mapData: Grid) => {
+export const saveGlobal = (global: Map<string, [number, number]>) => {
+	const data = Object.fromEntries(global);
+	fs.writeFileSync(`map/global.json`, JSON.stringify(data, null, 2));
+};
+
+export const saveMap = (mapData: Grid) => {
 	const data: any = Object.assign({}, mapData);
 	data['palette'] = Object.fromEntries(mapData.palette);
-	console.log(data);
-
 	fs.writeFileSync(`map/${mapData.name}`, JSON.stringify(data, null, 2));
 };
 
