@@ -2,8 +2,8 @@ import { Grid, State } from './types';
 import { colors, tiles, textRegexp } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
-let grid: Grid = {} as Grid;
-let state: State = {
+let grid = {} as Grid;
+const state: State = {
 	itemIndex: 0,
 	itemType: '',
 	mode: 'play',

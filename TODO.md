@@ -1,6 +1,8 @@
 - Missing background behind item types
 - Move item placement text to bottom when cursor on top
 - Adding a map should check for neighbors, like when creating them in a circle
+  > At startup, create a mapping [name] -> [x, y] for all neighbours and recurively.
+  > Default.json is always 0,0
 - Play mode:
   > Take into account keyup for better diagonal handling
 - Editor:
