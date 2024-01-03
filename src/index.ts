@@ -326,7 +326,7 @@ const newMap = (name: string) => {
 }
 
 const goTo = async (index: number): Promise<boolean> => {
-	let newGrid;
+	let newGrid: Grid;
 	const map = grid.neighbors[index];
 
 	if (map !== null) {
@@ -371,34 +371,48 @@ const goTo = async (index: number): Promise<boolean> => {
 			return;
 		}
 
-		// Update the map with all known neighbors
-		// TODO
-		//for (const value in globalMap.values) {
-			grid.neighbors[index] = newMapName;
-			await (<any>window).api.saveMap(grid);
-		//}
-
 		newGrid = newMap(newMapName);
 		
 		let [newX, newY] = globalMap.get(grid.name);
 
 		if (index === 0) {
-			newGrid.neighbors[3] = grid.name;
 			newX--;
 		} else if (index === 1) {
-			newGrid.neighbors[2] = grid.name;
 			newY--;
 		} else if (index === 2) {
-			newGrid.neighbors[1] = grid.name;
 			newY++;
 		} else {
-			newGrid.neighbors[0] = grid.name;
 			newX++;
 		}
-
+	
+		// Update the map with all known neighbors
+		for (const [mapName, position] of globalMap.entries()) {
+			if (position[0] === newX - 1 && position[1] === newY) {
+				const map = await (<any>window).api.loadMap(mapName);
+				map.neighbors[3] = newMapName;
+				newGrid.neighbors[0] = map.name;
+				await (<any>window).api.saveMap(map);
+			} else if (position[0] === newX + 1 && position[1] === newY) {
+				const map = await (<any>window).api.loadMap(mapName);
+				map.neighbors[0] = newMapName;
+				newGrid.neighbors[3] = map.name;
+				await (<any>window).api.saveMap(map);
+			} else if (position[0] === newX && position[1] === newY - 1) {
+				const map = await (<any>window).api.loadMap(mapName);
+				map.neighbors[2] = newMapName;
+				newGrid.neighbors[1] = map.name;
+				await (<any>window).api.saveMap(map);
+			} else if (position[0] === newX && position[1] === newY + 1) {
+				const map = await (<any>window).api.loadMap(mapName);
+				map.neighbors[1] = newMapName;
+				newGrid.neighbors[2] = map.name;
+				await (<any>window).api.saveMap(map);
+			}
+		}
+		
 		globalMap.set(newMapName, [newX, newY]);
-
 		await (<any>window).api.saveGlobal(globalMap);
+
 		await (<any>window).api.saveMap(newGrid);
 
 		state.question = '';
