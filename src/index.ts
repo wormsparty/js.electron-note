@@ -108,14 +108,18 @@ const draw = (singleMessage?: string) => {
   
     if (state.mode === 'item') {
       const itemTypes = Array.from(tiles.keys());
-      let x = 16;
-      const y = 80;
+      let px = 16;
+      let py = 80;
+  
+      if (state.currentY < 4) {
+          py = grid.height * 32 - 48;
+      }
 
       let totalLength = 0;
       itemTypes.forEach(t => totalLength += t.length + 1);
 
       ctx.fillStyle = '#000000';
-      ctx.fillRect(x, y - 16, totalLength * 16, 32);
+      ctx.fillRect(px, py - 16, totalLength * 16, 32);
 
       for (let i = 0; i < itemTypes.length; i++) {
         const itemType = itemTypes[i];
@@ -126,8 +130,8 @@ const draw = (singleMessage?: string) => {
           ctx.fillStyle = colors[0];
 	}
 
-        ctx.fillText(itemType, x, y);
-        x += (itemTypes[i].length + 1) * 16;
+        ctx.fillText(itemType, px, py);
+        px += (itemTypes[i].length + 1) * 16;
       }
 
       ctx.fillStyle = colors[8];
@@ -143,7 +147,11 @@ const draw = (singleMessage?: string) => {
 
   let px = 16;
   let py = 48;
-  
+ 
+  if (state.currentY < 4) {
+	  py = grid.height * 32 - 80;
+  }
+
   if (singleMessage !== undefined) {
     ctx.fillStyle = '#000000';
     ctx.fillRect(px, py - 16, singleMessage.length * 16, 32);

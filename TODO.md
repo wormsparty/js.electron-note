@@ -3,7 +3,7 @@
  # Bugs #
  ########
 
- - Move item placement text to bottom when cursor on top
+ - Nothing?
 
 
  ############
