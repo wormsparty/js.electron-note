@@ -109,6 +109,13 @@ const draw = (singleMessage?: string) => {
     if (state.mode === 'item') {
       const itemTypes = Array.from(tiles.keys());
       let x = 16;
+      const y = 80;
+
+      let totalLength = 0;
+      itemTypes.forEach(t => totalLength += t.length + 1);
+
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(x, y - 16, totalLength * 16, 32);
 
       for (let i = 0; i < itemTypes.length; i++) {
         const itemType = itemTypes[i];
@@ -119,7 +126,7 @@ const draw = (singleMessage?: string) => {
           ctx.fillStyle = colors[0];
 	}
 
-        ctx.fillText(itemType, x, 80);
+        ctx.fillText(itemType, x, y);
         x += (itemTypes[i].length + 1) * 16;
       }
 
@@ -134,12 +141,21 @@ const draw = (singleMessage?: string) => {
     ctx.fillText('@', state.currentX * 16, state.currentY * 32 + 16);
   }
 
-  ctx.fillStyle = colors[0];
+  let px = 16;
+  let py = 48;
   
   if (singleMessage !== undefined) {
-    ctx.fillText(singleMessage, 16, 48);	
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(px, py - 16, singleMessage.length * 16, 32);
+  
+    ctx.fillStyle = colors[0];
+    ctx.fillText(singleMessage, px, py);	
   } else if (state.question) {
-    ctx.fillText(state.question + state.answer, 16, 48);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(px, py - 16, (state.question.length + state.answer.length) * 16, 32);
+    
+    ctx.fillStyle = colors[0];
+    ctx.fillText(state.question + state.answer, px, py);
   } 
 }
 
@@ -314,7 +330,9 @@ const newMap = (name: string) => {
 		startY: 12,
 		map: [],
 		neighbors: [null, null, null, null],
-		palette: new Map<string, number>(),
+		palette: new Map<string, number>([
+			[ '.', 1 ],
+		]),
 	}
 
 	for (let i = 0; i < mapData.height; i++) {
@@ -416,6 +434,17 @@ const goTo = async (index: number): Promise<boolean> => {
 		await (<any>window).api.saveMap(newGrid);
 
 		state.question = '';
+
+		if (index === 0) {
+			state.currentX = newGrid.width - 1;
+		} else if (index === 1) {
+			state.currentY = newGrid.height - 1;
+		} else if (index === 2) {
+			state.currentY = 0;
+		} else {
+			state.currentX = 0;
+		}
+
 		grid = newGrid;
 		draw(`Map ${newMapName} created`);
 	}
