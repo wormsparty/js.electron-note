@@ -11,11 +11,11 @@ export const colors = [
 ];
 
 export const tiles = new Map<string, string> ([
-	[ 'items', '*$()[]%&/?!' ],
-	[ 'map', '<>^v+/' ],
-	[ 'characters', '@t' ],
-	[ 'obstacles', '#~*' ],
-	[ 'walkable', '.' ],
+	[ 'map', '#~*<>.' ],
+	[ 'item', '*$%&?!' ],
+	[ 'mob', '@tgs' ],
 ]);
+
+export const walkable = '.';
 
 export const textRegexp = new RegExp('^[a-zA-Z0-9 \.,!\?_\-]$');

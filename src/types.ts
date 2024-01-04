@@ -1,10 +1,13 @@
+export type Layer = 'map' | 'item' | 'mob';
+export type Mode = 'play' | 'text' | 'item';
+
 export interface Grid {
         name: string,
 	width: number, 
 	height: number,
         startX: number,
         startY: number,
-        map: Array<string>,
+        map: Map<Layer, Array<string>>,
         neighbors: Array<string>,
 	palette: Map<string, number>,
 };
@@ -12,8 +15,8 @@ export interface Grid {
 export interface State {
 	itemIndex: number,
 	itemType: string,
-	mode: 'item' | 'text' | 'play',
-	layer: 'map' | 'item' | 'mob',
+	mode: Mode,
+	layer: Layer,
 	question: string,
 	answer: string,
 	answered: (a: string) => void,

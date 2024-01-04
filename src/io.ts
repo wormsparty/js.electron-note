@@ -14,10 +14,9 @@ export const loadGlobal = () => {
 export const loadMap = (name: string) => {
 	try {
 		const grid = JSON.parse(fs.readFileSync(`map/${name}`, { encoding: 'utf8', flag: 'r' }));
-		if (grid.palette) {
-			// Object needs to be converted to Map
-			grid.palette = new Map(Object.entries(grid.palette));
-		}
+		
+		grid.palette = new Map(Object.entries(grid.palette));
+		grid.map = new Map(Object.entries(grid.map));
 
 		return grid;
 	} catch (error) {
@@ -28,12 +27,25 @@ export const loadMap = (name: string) => {
 
 export const saveGlobal = (global: Map<string, [number, number]>) => {
 	const data = Object.fromEntries(global);
+
+	if (!fs.existsSync('map')) {
+		fs.mkdirSync('map');
+	}
+
 	fs.writeFileSync(`map/global.json`, JSON.stringify(data, null, 2));
 };
 
 export const saveMap = (mapData: Grid) => {
 	const data: any = Object.assign({}, mapData);
+
+	// Need to convert Map to Object for serialisation
 	data['palette'] = Object.fromEntries(mapData.palette);
+	data['map'] = Object.fromEntries(mapData.map);
+	
+	if (!fs.existsSync('map')) {
+		fs.mkdirSync('map');
+	}
+
 	fs.writeFileSync(`map/${mapData.name}`, JSON.stringify(data, null, 2));
 };
 

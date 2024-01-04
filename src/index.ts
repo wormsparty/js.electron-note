@@ -1,5 +1,5 @@
-import { Grid, State } from './types';
-import { colors, tiles, textRegexp } from './consts';
+import { Grid, State, Layer, Mode } from './types';
+import { colors, tiles, walkable, textRegexp } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
 let grid = {} as Grid;
@@ -18,7 +18,7 @@ const state: State = {
 	currentY: 0,
 };
 
-const switchToMode = (newMode: 'play' | 'text' | 'item') => {
+const switchToMode = (newMode: Mode) => {
   state.mode = newMode;
   draw(`Mode: ${state.mode}`);
 }
@@ -64,7 +64,7 @@ const draw = (singleMessage?: string) => {
   let posy = 16;
 
   for (let j = 0; j < grid.height; j++) {
-    let line = grid.map[j];
+    let line = grid.map.get('map')[j];
     let text = line[0];
 
     for (let i = 1; i < grid.width; i++) {
@@ -108,34 +108,44 @@ const draw = (singleMessage?: string) => {
   
     if (state.mode === 'item') {
       const itemTypes = Array.from(tiles.keys());
+      const availableChars = tiles.get(state.itemType);
+      
       let px = 16;
       let py = 80;
   
-      if (state.currentY < 4) {
-          py = grid.height * 32 - 48;
+      if (state.currentY < grid.height - 4) {
+          py = grid.height * 32 - 80;
       }
 
       let totalLength = 0;
       itemTypes.forEach(t => totalLength += t.length + 1);
+      
+      const typeChangeMsg = ` (q-w to change)`;
+      const symbolsMsg = `${availableChars} (a-s to change)`;
 
       ctx.fillStyle = '#000000';
-      ctx.fillRect(px, py - 16, totalLength * 16, 32);
+      ctx.fillRect(px, py - 16, (totalLength + typeChangeMsg.length) * 16, 32);
+      ctx.fillRect(px, py + 16, symbolsMsg.length * 16, 32);
 
       for (let i = 0; i < itemTypes.length; i++) {
         const itemType = itemTypes[i];
 
         if (itemType === state.itemType) {
-          ctx.fillStyle = colors[1];
-        } else {
           ctx.fillStyle = colors[0];
+        } else {
+          ctx.fillStyle = colors[1];
 	}
 
         ctx.fillText(itemType, px, py);
         px += (itemTypes[i].length + 1) * 16;
       }
+       
+      ctx.fillStyle = colors[0];
+      ctx.fillText(typeChangeMsg, px, py);
+      ctx.fillText(symbolsMsg, 16, py + 32);
 
       ctx.fillStyle = colors[8];
-      ctx.fillText(tiles.get(state.itemType)[state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
+      ctx.fillText(availableChars[state.itemIndex], state.currentX * 16, state.currentY * 32 + 16);
     }
   } else {
     ctx.fillStyle = '#000000';
@@ -148,8 +158,8 @@ const draw = (singleMessage?: string) => {
   let px = 16;
   let py = 48;
  
-  if (state.currentY < 4) {
-	  py = grid.height * 32 - 80;
+  if (state.currentY < grid.height - 4) {
+	  py = grid.height * 32 - 112;
   }
 
   if (singleMessage !== undefined) {
@@ -176,9 +186,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		globalMap = await (<any>window).api.loadGlobal('global.json');
 		grid = await (<any>window).api.loadMap('default.json');
 
+		if (globalMap === null) {
+			globalMap = new Map<string, [number, number]>();
+		}
+
 		if (grid === null) {
 			grid = newMap('default.json');
 			globalMap.set('default.json', [0, 0]);
+			await (<any>window).api.saveGlobal(globalMap);
+			await (<any>window).api.saveMap(grid);
 		}
 
 		state.currentX = grid.startX;
@@ -202,23 +218,23 @@ const move = (diffX: number, diffY: number): void => {
 		return;
 	}
 
-	const walkable = tiles.get('walkable');
+	const map = grid.map.get('map');
 
-	if (walkable.indexOf(grid.map[y][x]) > -1) {
+	if (walkable.indexOf(map[y][x]) > -1) {
 		state.currentX = x;
 		state.currentY = y;
     		return;
 	}
 
 	if (state.currentY !== y) {
-		if (walkable.indexOf(grid.map[y][state.currentX]) > -1) {
+		if (walkable.indexOf(map[y][state.currentX]) > -1) {
 			state.currentY = y;
 			return;
 		} 
 	}
 
        	if (state.currentX !== x) {
-		if (walkable.indexOf(grid.map[state.currentY][x]) > -1) {
+		if (walkable.indexOf(map[state.currentY][x]) > -1) {
 			state.currentX = x;
 			return;
 		}
@@ -330,25 +346,35 @@ const moveDownRight = async () => {
 };
 
 const newMap = (name: string) => {
-	const mapData: Grid = {
+	const newGrid: Grid = {
 		name: name,
 		width: 64, 
 		height: 24,
 		startX: 32,
 		startY: 12,
-		map: [],
+		map: new Map<Layer, Array<string>>(),
 		neighbors: [null, null, null, null],
 		palette: new Map<string, number>([
 			[ '.', 1 ],
 		]),
 	}
 
-	for (let i = 0; i < mapData.height; i++) {
-		mapData.map[i] = '.'.repeat(mapData.width);
+	const mapData = [];
+	const itemData = [];
+	const mobData = [];
+
+	for (let i = 0; i < newGrid.height; i++) {
+		mapData.push('.'.repeat(newGrid.width));
+		itemData.push(' '.repeat(newGrid.width));
+		mobData.push(' '.repeat(newGrid.width));
 	}
 	
+	newGrid.map.set('map', mapData);
+	newGrid.map.set('item', itemData);
+	newGrid.map.set('mob', mobData);
+	
 	console.log('Map ' + name + ' created');
-	return mapData;
+	return newGrid;
 }
 
 const goTo = async (index: number): Promise<boolean> => {
@@ -384,7 +410,6 @@ const goTo = async (index: number): Promise<boolean> => {
 		return false;
 	}
 
-	// TODO: Ask for new / link to existing / delete
 	state.question = 'Enter new map name (or esc): ';
 	state.answer = '';
 	state.answered = async (answer: string) => {
@@ -462,8 +487,9 @@ const goTo = async (index: number): Promise<boolean> => {
 };
 
 const write = (chr: string) => {
-	const line = grid.map[state.currentY];
-	grid.map[state.currentY] = line.substring(0, state.currentX) + chr + line.substring(state.currentX + 1);
+	const map = grid.map.get('map');
+	const line = map[state.currentY];
+	map[state.currentY] = line.substring(0, state.currentX) + chr + line.substring(state.currentX + 1);
 };
 
 window.addEventListener('keydown', async (event: any) => {
@@ -621,7 +647,7 @@ window.addEventListener('keydown', async (event: any) => {
 				const number = Number(event.key);
 		
 				if (!Number.isNaN(number)) {
-					const chr = grid.map[state.currentY][state.currentX];
+					const chr = grid.map.get('map')[state.currentY][state.currentX];
 
 					// We use one single palette value 't' for all text.
 					if (textRegexp.test(chr) && chr !== '.') {
