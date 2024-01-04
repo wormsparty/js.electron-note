@@ -14,9 +14,8 @@ export interface Grid {
 
 export interface State {
 	itemIndex: number,
-	itemType: string,
-	mode: Mode,
 	layer: Layer,
+	mode: Mode,
 	question: string,
 	answer: string,
 	answered: (a: string) => void,

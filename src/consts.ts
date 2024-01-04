@@ -1,3 +1,5 @@
+import { Layer } from './types';
+
 export const colors = [
 	'#FFFFFF', /* white */
 	'#646464', /* gray */
@@ -10,7 +12,7 @@ export const colors = [
 	'#050505', /* black */
 ];
 
-export const tiles = new Map<string, string> ([
+export const tiles = new Map<Layer, string> ([
 	[ 'map', '#~*<>.' ],
 	[ 'item', '*$%&?!' ],
 	[ 'mob', '@tgs' ],

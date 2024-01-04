@@ -8,9 +8,8 @@ let globalMap = new Map<string, [number, number]>();
 
 const state: State = {
 	itemIndex: 0,
-	itemType: '',
-	mode: 'play',
 	layer: 'map',
+	mode: 'play',
 	question: '',
 	answer: '',
 	answered: undefined,
@@ -22,6 +21,52 @@ const switchToMode = (newMode: Mode) => {
   state.mode = newMode;
   draw(`Mode: ${state.mode}`);
 }
+
+const flushLine = (text: string, posx: number, posy: number, ctx: CanvasRenderingContext2D) => {
+  if (text.length === 0) {
+    return;
+  }
+
+  let color = grid.palette.get(text[0]);
+
+  if (!color) {
+    color = grid.palette.get('t') ?? 0;
+  }
+
+  ctx.fillStyle = colors[color];
+  ctx.fillText(text, posx, posy);
+
+  console.log(text + ' @ ' + posx + ', ' + posy);
+};
+
+const drawMap = (mapName: Layer, ctx: CanvasRenderingContext2D) => {
+  let posx = 0;
+  const map = grid.map.get(mapName);
+
+  for (let j = 0; j < grid.height; j++) {
+    let line = map[j];
+    let text = '';
+    const posy = j * 32 + 16;
+    for (let i = 0; i < grid.width; i++) {
+      const chr = line[i];
+
+      if (chr === ' ') {
+        flushLine(text, posx, posy, ctx);
+	posx += (text.length  + 1) * 16;
+	text = '';
+      } else if (text.length === 0 || chr[0] === text[0]) {
+        text += chr;
+      } else {
+        flushLine(text, posx, posy, ctx);
+	posx += text.length * 16;
+        text = chr;
+      }
+    }
+
+    flushLine(text, posx, posy, ctx);
+    posx = 0;
+  }
+};
 
 const draw = (singleMessage?: string) => {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -60,55 +105,17 @@ const draw = (singleMessage?: string) => {
   ctx.translate(marginLeft, marginTop);
   ctx.scale(scale, scale);
 
-  let posx = 0;
-  let posy = 16;
+  drawMap('map', ctx);
+  drawMap('item', ctx);
+  drawMap('mob', ctx);
 
-  for (let j = 0; j < grid.height; j++) {
-    let line = grid.map.get('map')[j];
-    let text = line[0];
-
-    for (let i = 1; i < grid.width; i++) {
-      const chr = line[i];
-
-      if (chr == text[0]) {
-        text += chr;
-      } else {
-        let color = grid.palette.get(text[0]);
-
-	if (!color) {
-	  color = grid.palette.get('t') ?? 0;
-	}
-
-        ctx.fillStyle = colors[color];
-        ctx.fillText(text, posx, posy);
-        posx += text.length * 16;
-
-	text = chr;
-      }
-    }
-
-    if (text.length > 0) {
-      let color = grid.palette.get(text[0]);
-
-      if (!color) {
-        color = grid.palette.get('t') ?? 0;
-      }
-
-      ctx.fillStyle = colors[color];
-      ctx.fillText(text, posx, posy);
-    }
-
-    posy += 32;
-    posx = 0;
-  }
- 
   if (state.mode !== 'play') {
     ctx.fillStyle = colors[0];
     ctx.fillRect(state.currentX * 16, state.currentY * 32, 16, 32);
   
     if (state.mode === 'item') {
-      const itemTypes = Array.from(tiles.keys());
-      const availableChars = tiles.get(state.itemType);
+      const layers = Array.from(tiles.keys());
+      const availableChars = tiles.get(state.layer);
       
       let px = 16;
       let py = 80;
@@ -118,7 +125,7 @@ const draw = (singleMessage?: string) => {
       }
 
       let totalLength = 0;
-      itemTypes.forEach(t => totalLength += t.length + 1);
+      layers.forEach(t => totalLength += t.length + 1);
       
       const typeChangeMsg = ` (q-w to change)`;
       const symbolsMsg = `${availableChars} (a-s to change)`;
@@ -127,17 +134,17 @@ const draw = (singleMessage?: string) => {
       ctx.fillRect(px, py - 16, (totalLength + typeChangeMsg.length) * 16, 32);
       ctx.fillRect(px, py + 16, symbolsMsg.length * 16, 32);
 
-      for (let i = 0; i < itemTypes.length; i++) {
-        const itemType = itemTypes[i];
+      for (let i = 0; i < layers.length; i++) {
+        const layer = layers[i];
 
-        if (itemType === state.itemType) {
+        if (layer === state.layer) {
           ctx.fillStyle = colors[0];
         } else {
           ctx.fillStyle = colors[1];
 	}
 
-        ctx.fillText(itemType, px, py);
-        px += (itemTypes[i].length + 1) * 16;
+        ctx.fillText(layer, px, py);
+        px += (layers[i].length + 1) * 16;
       }
        
       ctx.fillStyle = colors[0];
@@ -199,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		state.currentX = grid.startX;
 		state.currentY = grid.startY;
-		state.itemType = tiles.keys().next().value;
+		state.layer = tiles.keys().next().value;
 		draw();
 	});
 });
@@ -373,7 +380,6 @@ const newMap = (name: string) => {
 	newGrid.map.set('item', itemData);
 	newGrid.map.set('mob', mobData);
 	
-	console.log('Map ' + name + ' created');
 	return newGrid;
 }
 
@@ -487,7 +493,7 @@ const goTo = async (index: number): Promise<boolean> => {
 };
 
 const write = (chr: string) => {
-	const map = grid.map.get('map');
+	const map = grid.map.get(state.layer);
 	const line = map[state.currentY];
 	map[state.currentY] = line.substring(0, state.currentX) + chr + line.substring(state.currentX + 1);
 };
@@ -594,7 +600,7 @@ window.addEventListener('keydown', async (event: any) => {
 			return;
 		} else if (event.key === ' ') {
 			if (state.mode == 'item') {
-				write(tiles.get(state.itemType)[state.itemIndex]);
+				write(tiles.get(state.layer)[state.itemIndex]);
 				moveRight(false);
 				return;
 			}
@@ -610,24 +616,24 @@ window.addEventListener('keydown', async (event: any) => {
 			}
 		} else {
 			if (event.key === 'q') {
-				const itemTypes = Array.from(tiles.keys());
-				const currentIndex = itemTypes.indexOf(state.itemType);
+				const layers = Array.from(tiles.keys());
+				const currentIndex = layers.indexOf(state.layer);
 
 				if (currentIndex > 0) {
-					state.itemType = itemTypes[currentIndex - 1];
+					state.layer = layers[currentIndex - 1];
 				} else {
-					state.itemType = itemTypes[itemTypes.length - 1];
+					state.layer = layers[layers.length - 1];
 				}
 
 				state.itemIndex = 0;
 			} else if (event.key === 'w') {
-				const itemTypes = Array.from(tiles.keys());
-				const currentIndex = itemTypes.indexOf(state.itemType);
+				const layers = Array.from(tiles.keys());
+				const currentIndex = layers.indexOf(state.layer);
 
-				if (currentIndex < itemTypes.length - 1) {
-					state.itemType = itemTypes[currentIndex + 1];
+				if (currentIndex < layers.length - 1) {
+					state.layer = layers[currentIndex + 1];
 				} else {
-					state.itemType = itemTypes[0];
+					state.layer = layers[0];
 				}
 
 				state.itemIndex = 0;
@@ -635,10 +641,10 @@ window.addEventListener('keydown', async (event: any) => {
 				if (state.itemIndex > 0) {
 					state.itemIndex--;
 				} else {
-					state.itemIndex = tiles.get(state.itemType).length - 1;
+					state.itemIndex = tiles.get(state.layer).length - 1;
 				}
 			} else if (event.key === 's') {
-				if (state.itemIndex < tiles.get(state.itemType).length - 1) {
+				if (state.itemIndex < tiles.get(state.layer).length - 1) {
 					state.itemIndex++;
 				} else {
 					state.itemIndex = 0;
