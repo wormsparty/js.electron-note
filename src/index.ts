@@ -1,5 +1,5 @@
 import { Grid, State, Layer, Mode } from './types';
-import { colors, tiles, walkable, textRegexp } from './consts';
+import { colors, tiles, walkable, textRegexp, config } from './consts';
 import font from '../assets/Inconsolata.ttf';
 
 let grid = {} as Grid;
@@ -35,8 +35,6 @@ const flushLine = (text: string, posx: number, posy: number, ctx: CanvasRenderin
 
   ctx.fillStyle = colors[color];
   ctx.fillText(text, posx, posy);
-
-  console.log(text + ' @ ' + posx + ', ' + posy);
 };
 
 const drawMap = (mapName: Layer, ctx: CanvasRenderingContext2D) => {
@@ -676,3 +674,61 @@ window.addEventListener('keydown', async (event: any) => {
 
 	console.log(`Unknown mode: ${state.mode}`);
 });
+
+window.addEventListener('gamepadconnected', (e) => {
+  console.log(`Controller connected #${e.gamepad.index}`);
+});
+
+window.addEventListener('gamepaddisconnected', (e) => {
+  console.log(`Controller disconnected #${e.gamepad.index}`);
+});
+
+setInterval(() => {
+	const gamepads = navigator.getGamepads();
+	
+	for (let i = 0; i < gamepads.length; i++) {
+		const gamepad = gamepads[i];
+
+		if (gamepad === null) {
+			continue;
+		}
+ 		
+		const deadZone = 0.4;
+
+		if (gamepad.axes[1] > deadZone) {
+			if (gamepad.axes[0] > deadZone) {
+				moveDownRight();
+			} else if (gamepad.axes[0] < -deadZone) {
+				moveDownLeft();
+			} else {
+				moveDown();
+			}
+		} else if (gamepad.axes[1] < -deadZone) {
+			if (gamepad.axes[0] > deadZone) {
+				moveUpRight();
+			} else if (gamepad.axes[0] < -deadZone) {
+				moveUpLeft();
+			} else {
+				moveUp();
+			}
+		} else {
+			if (gamepad.axes[0] > deadZone) {
+				moveRight();
+			} else if (gamepad.axes[0] < -deadZone) {
+				moveLeft();
+			} else {
+				// Nothing
+			}
+		}
+
+		/*for (let j = 0; j < gamepad.axes.length; j++) {
+			const axis = gamepad.axes[j];
+			console.log(`axes[${j}] = ${axis}`);
+		}*/
+
+		/*for (let k = 0; k < gamepad.buttons.length; k++) {
+			const button = gamepad.buttons[k];
+			console.log(`button[${k}] = ${button}`);
+		}*/
+	}
+}, config.interval);

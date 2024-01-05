@@ -30,5 +30,8 @@
 - Ennemies?
 - What's the setting? What's the aim of the game?
 - Be able to remove a map (if it doesn't leave orphans behind).
-- Animated ASCII -> Possible if we make a higher framerate and imitate key repeat
+- Don't draw on each input. Instead use a fixed framerate
+  > Allows ASCII animations
+  > Imitate key repeat
+  > Integrate joystick
 - Be able to configure keys?

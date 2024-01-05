@@ -1,5 +1,10 @@
 import { Layer } from './types';
 
+export const config = {
+	interval: 30,
+	delay: 500,
+};
+
 export const colors = [
 	'#FFFFFF', /* white */
 	'#646464', /* gray */
