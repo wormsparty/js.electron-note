@@ -713,7 +713,7 @@ setInterval(() => {
 			}
 		} else {
 			if (gamepad.axes[0] > deadZone) {
-				moveRight();
+				moveRight(true);
 			} else if (gamepad.axes[0] < -deadZone) {
 				moveLeft();
 			} else {
